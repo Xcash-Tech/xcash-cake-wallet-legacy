@@ -1,4 +1,4 @@
-package com.cakewallet.monero
+package com.xcashcakewallet.monero
 
 import android.app.Activity
 import android.os.AsyncTask

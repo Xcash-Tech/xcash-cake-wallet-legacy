@@ -4,9 +4,9 @@ WORKDIR=/opt/android
 TOOLCHAIN_BASE_DIR=${WORKDIR}/toolchain
 ORIGINAL_PATH=$PATH
 MONERO_BRANCH=v0.17.1.9-android
-MONERO_SRC_DIR=${WORKDIR}/monero
+MONERO_SRC_DIR=${WORKDIR}/xcash
 
-#git clone https://github.com/cake-tech/monero.git ${MONERO_SRC_DIR} --branch ${MONERO_BRANCH}
+#git clone https://github.com/X-CASH-official/xcash-core.git ${MONERO_SRC_DIR}
 cd $MONERO_SRC_DIR
 git submodule init
 git submodule update
@@ -58,11 +58,13 @@ case $arch in
 esac
 
 cd $MONERO_SRC_DIR
+sed -i 's/-Werror/-Wall/g' CMakeLists.txt
+
 rm -rf ./build/release
 mkdir -p ./build/release
 cd ./build/release
-CC=${CLANG} CXX=${CXXLANG} cmake -D USE_DEVICE_TREZOR=OFF -D BUILD_GUI_DEPS=1 -D BUILD_TESTS=OFF -D ARCH=${ARCH} -D STATIC=ON -D BUILD_64=${BUILD_64} -D CMAKE_BUILD_TYPE=release -D ANDROID=true -D INSTALL_VENDORED_LIBUNBOUND=ON -D BUILD_TAG=${TAG} -D CMAKE_SYSTEM_NAME="Android" -D CMAKE_ANDROID_STANDALONE_TOOLCHAIN="${ANDROID_STANDALONE_TOOLCHAIN_PATH}" -D CMAKE_ANDROID_ARCH_ABI=${ARCH_ABI} $FLAGS ../..
-make wallet_api -j4
+CC=${CLANG} CXX=${CXXLANG} cmake -D USE_DEVICE_TREZOR=OFF -D MANUAL_SUBMODULES=1 -D BUILD_GUI_DEPS=1 -D BUILD_TESTS=OFF -D ARCH=${ARCH} -D STATIC=ON -D BUILD_64=${BUILD_64} -D CMAKE_BUILD_TYPE=release -D ANDROID=true -D INSTALL_VENDORED_LIBUNBOUND=ON -D BUILD_TAG=${TAG} -D CMAKE_SYSTEM_NAME="Android" -D CMAKE_ANDROID_STANDALONE_TOOLCHAIN="${ANDROID_STANDALONE_TOOLCHAIN_PATH}" -D CMAKE_ANDROID_ARCH_ABI=${ARCH_ABI} $FLAGS ../..
+make wallet_api -j2
 find . -path ./lib -prune -o -name '*.a' -exec cp '{}' lib \;
 
 cp -r ./lib/* $DEST_LIB_DIR

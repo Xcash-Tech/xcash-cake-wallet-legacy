@@ -8,7 +8,7 @@ BOOST_FILE_PATH=$WORKDIR/$BOOST_FILENAME
 BOOST_SRC_DIR=$WORKDIR/boost_1_68_0
 
 if [ ! -e "$BOOST_FILE_PATH" ]; then
-	wget https://dl.bintray.com/boostorg/release/1.68.0/source/$BOOST_FILENAME -O $BOOST_FILE_PATH
+	wget http://downloads.sourceforge.net/project/boost/boost/1.68.0/$BOOST_FILENAME -O $BOOST_FILE_PATH
 fi
 
 cd $WORKDIR

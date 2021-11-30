@@ -1,4 +1,4 @@
-package com.cakewallet.cake_wallet;
+package com.xcashcakewallet.cake_wallet;
 
 import io.flutter.app.FlutterApplication;
 import io.flutter.plugin.common.PluginRegistry;

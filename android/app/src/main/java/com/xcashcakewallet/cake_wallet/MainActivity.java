@@ -1,4 +1,4 @@
-package com.cakewallet.cake_wallet;
+package com.xcashcakewallet.cake_wallet;
 
 import androidx.annotation.NonNull;
 

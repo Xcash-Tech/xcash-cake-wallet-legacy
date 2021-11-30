@@ -101,7 +101,7 @@ Future<void> main() async {
     final exchangeTemplates =
         await Hive.openBox<ExchangeTemplate>(ExchangeTemplate.boxName);
     final unspentCoinsInfoSource =
-      await Hive.openBox<UnspentCoinsInfo>(UnspentCoinsInfo.boxName);
+        await Hive.openBox<UnspentCoinsInfo>(UnspentCoinsInfo.boxName);
     await initialSetup(
         sharedPreferences: await SharedPreferences.getInstance(),
         nodes: nodes,

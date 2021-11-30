@@ -54,7 +54,7 @@ class AddressValidator extends TextValidator {
   static List<int> getLength(CryptoCurrency type) {
     switch (type) {
       case CryptoCurrency.xmr:
-        return [95, 106];
+        return [98];
       case CryptoCurrency.ada:
         return null;
       case CryptoCurrency.bch:

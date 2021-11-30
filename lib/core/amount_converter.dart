@@ -3,7 +3,7 @@ import 'package:cake_wallet/entities/crypto_currency.dart';
 
 class AmountConverter {
   static const _moneroAmountLength = 12;
-  static const _moneroAmountDivider = 1000000000000;
+  static const _moneroAmountDivider = 1000000;
   static const _litecoinAmountDivider = 100000000;
   static const _ethereumAmountDivider = 1000000000000000000;
   static const _dashAmountDivider = 100000000;

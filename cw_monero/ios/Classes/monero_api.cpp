@@ -8,13 +8,14 @@
 #include "thread"
 #include "CwWalletListener.h"
 #if __APPLE__
-#include "../External/android/monero/include/wallet2_api.h"
+// Fix for randomx on ios
+void __clear_cache(void* start, void* end) { }
+#include "../External/ios/include/wallet2_api.h"
 #else
 #include "../External/android/x86/include/wallet2_api.h"
 #endif
 
 using namespace std::chrono_literals;
-
 #ifdef __cplusplus
 extern "C"
 {
@@ -57,7 +58,7 @@ extern "C"
         }
     };
 
-    struct MoneroWalletListener : Monero::WalletListener
+    struct MoneroWalletListener : XCash::WalletListener
     {
         uint64_t m_height;
         bool m_need_to_refresh;
@@ -142,7 +143,7 @@ extern "C"
 
         int64_t datetime;
 
-        TransactionInfoRow(Monero::TransactionInfo *transaction)
+        TransactionInfoRow(XCash::TransactionInfo *transaction)
         {
             amount = transaction->amount();
             fee = transaction->fee();
@@ -165,9 +166,9 @@ extern "C"
         uint64_t amount;
         uint64_t fee;
         char *hash;
-        Monero::PendingTransaction *transaction;
+        XCash::PendingTransaction *transaction;
 
-        PendingTransactionRaw(Monero::PendingTransaction *_transaction)
+        PendingTransactionRaw(XCash::PendingTransaction *_transaction)
         {
             transaction = _transaction;
             amount = _transaction->amount();
@@ -176,17 +177,17 @@ extern "C"
         }
     };
 
-    Monero::Wallet *m_wallet;
-    Monero::TransactionHistory *m_transaction_history;
+    XCash::Wallet *m_wallet;
+    XCash::TransactionHistory *m_transaction_history;
     MoneroWalletListener *m_listener;
-    Monero::Subaddress *m_subaddress;
-    Monero::SubaddressAccount *m_account;
+    XCash::Subaddress *m_subaddress;
+    XCash::SubaddressAccount *m_account;
     uint64_t m_last_known_wallet_height;
     uint64_t m_cached_syncing_blockchain_height = 0;
     std::mutex store_lock;
     bool is_storing = false;
 
-    void change_current_wallet(Monero::Wallet *wallet)
+    void change_current_wallet(XCash::Wallet *wallet)
     {
         m_wallet = wallet;
         m_listener = nullptr;
@@ -220,25 +221,25 @@ extern "C"
         }
     }
 
-    Monero::Wallet *get_current_wallet()
+    XCash::Wallet *get_current_wallet()
     {
         return m_wallet;
     }
 
     bool create_wallet(char *path, char *password, char *language, int32_t networkType, char *error)
     {
-        Monero::WalletManagerFactory::setLogLevel(4);
+        XCash::WalletManagerFactory::setLogLevel(4);
 
-        Monero::NetworkType _networkType = static_cast<Monero::NetworkType>(networkType);
-        Monero::WalletManager *walletManager = Monero::WalletManagerFactory::getWalletManager();
-        Monero::Wallet *wallet = walletManager->createWallet(path, password, language, _networkType);
+        XCash::NetworkType _networkType = static_cast<XCash::NetworkType>(networkType);
+        XCash::WalletManager *walletManager = XCash::WalletManagerFactory::getWalletManager();
+        XCash::Wallet *wallet = walletManager->createWallet(path, password, language, _networkType);
 
         int status;
         std::string errorString;
 
         wallet->statusWithErrorString(status, errorString);
 
-        if (wallet->status() != Monero::Wallet::Status_Ok)
+        if (wallet->status() != XCash::Wallet::Status_Ok)
         {
             error = strdup(wallet->errorString().c_str());
             return false;
@@ -251,8 +252,8 @@ extern "C"
 
     bool restore_wallet_from_seed(char *path, char *password, char *seed, int32_t networkType, uint64_t restoreHeight, char *error)
     {
-        Monero::NetworkType _networkType = static_cast<Monero::NetworkType>(networkType);
-        Monero::Wallet *wallet = Monero::WalletManagerFactory::getWalletManager()->recoveryWallet(
+        XCash::NetworkType _networkType = static_cast<XCash::NetworkType>(networkType);
+        XCash::Wallet *wallet = XCash::WalletManagerFactory::getWalletManager()->recoveryWallet(
             std::string(path),
             std::string(password),
             std::string(seed),
@@ -264,7 +265,7 @@ extern "C"
 
         wallet->statusWithErrorString(status, errorString);
 
-        if (status != Monero::Wallet::Status_Ok || !errorString.empty())
+        if (status != XCash::Wallet::Status_Ok || !errorString.empty())
         {
             error = strdup(errorString.c_str());
             return false;
@@ -276,8 +277,8 @@ extern "C"
 
     bool restore_wallet_from_keys(char *path, char *password, char *language, char *address, char *viewKey, char *spendKey, int32_t networkType, uint64_t restoreHeight, char *error)
     {
-        Monero::NetworkType _networkType = static_cast<Monero::NetworkType>(networkType);
-        Monero::Wallet *wallet = Monero::WalletManagerFactory::getWalletManager()->createWalletFromKeys(
+        XCash::NetworkType _networkType = static_cast<XCash::NetworkType>(networkType);
+        XCash::Wallet *wallet = XCash::WalletManagerFactory::getWalletManager()->createWalletFromKeys(
             std::string(path),
             std::string(password),
             std::string(language),
@@ -292,7 +293,7 @@ extern "C"
 
         wallet->statusWithErrorString(status, errorString);
 
-        if (status != Monero::Wallet::Status_Ok || !errorString.empty())
+        if (status != XCash::Wallet::Status_Ok || !errorString.empty())
         {
             error = strdup(errorString.c_str());
             return false;
@@ -305,16 +306,16 @@ extern "C"
     bool load_wallet(char *path, char *password, int32_t nettype)
     {
         nice(19);
-        Monero::NetworkType networkType = static_cast<Monero::NetworkType>(nettype);
-        Monero::WalletManager *walletManager = Monero::WalletManagerFactory::getWalletManager();
-        Monero::Wallet *wallet = walletManager->openWallet(std::string(path), std::string(password), networkType);
+        XCash::NetworkType networkType = static_cast<XCash::NetworkType>(nettype);
+        XCash::WalletManager *walletManager = XCash::WalletManagerFactory::getWalletManager();
+        XCash::Wallet *wallet = walletManager->openWallet(std::string(path), std::string(password), networkType);
         int status;
         std::string errorString;
 
         wallet->statusWithErrorString(status, errorString);
         change_current_wallet(wallet);
 
-        return !(status != Monero::Wallet::Status_Ok || !errorString.empty());
+        return !(status != XCash::Wallet::Status_Ok || !errorString.empty());
     }
 
     char *error_string() {
@@ -324,12 +325,12 @@ extern "C"
 
     bool is_wallet_exist(char *path)
     {
-        return Monero::WalletManagerFactory::getWalletManager()->walletExists(std::string(path));
+        return XCash::WalletManagerFactory::getWalletManager()->walletExists(std::string(path));
     }
 
     void close_current_wallet()
     {
-        Monero::WalletManagerFactory::getWalletManager()->closeWallet(get_current_wallet());
+        XCash::WalletManagerFactory::getWalletManager()->closeWallet(get_current_wallet());
         change_current_wallet(nullptr);
     }
 
@@ -405,7 +406,7 @@ extern "C"
     bool setup_node(char *address, char *login, char *password, bool use_ssl, bool is_light_wallet, char *error)
     {
         nice(19);
-        Monero::Wallet *wallet = get_current_wallet();
+        XCash::Wallet *wallet = get_current_wallet();
         
         std::string _login = "";
         std::string _password = "";
@@ -471,9 +472,9 @@ extern "C"
     {
         nice(19);
         
-        auto priority = static_cast<Monero::PendingTransaction::Priority>(priority_raw);
+        auto priority = static_cast<XCash::PendingTransaction::Priority>(priority_raw);
         std::string _payment_id;
-        Monero::PendingTransaction *transaction;
+        XCash::PendingTransaction *transaction;
 
         if (payment_id != nullptr)
         {
@@ -482,17 +483,17 @@ extern "C"
 
         if (amount != nullptr)
         {
-            uint64_t _amount = Monero::Wallet::amountFromString(std::string(amount));
+            uint64_t _amount = XCash::Wallet::amountFromString(std::string(amount));
             transaction = m_wallet->createTransaction(std::string(address), _payment_id, _amount, m_wallet->defaultMixin(), priority, subaddr_account);
         }
         else
         {
-            transaction = m_wallet->createTransaction(std::string(address), _payment_id, Monero::optional<uint64_t>(), m_wallet->defaultMixin(), priority, subaddr_account);
+            transaction = m_wallet->createTransaction(std::string(address), _payment_id, XCash::optional<uint64_t>(), m_wallet->defaultMixin(), priority, subaddr_account);
         }
         
         int status = transaction->status();
 
-        if (status == Monero::PendingTransaction::Status::Status_Error || status == Monero::PendingTransaction::Status::Status_Critical)
+        if (status == XCash::PendingTransaction::Status::Status_Error || status == XCash::PendingTransaction::Status::Status_Critical)
         {
             error = Utf8Box(strdup(transaction->errorString().c_str()));
             return false;
@@ -505,7 +506,7 @@ extern "C"
         pendingTransaction = PendingTransactionRaw(transaction);
         return true;
     }
-
+/*
     bool transaction_create_mult_dest(char **addresses, char *payment_id, char **amounts, uint32_t size,
                                                   uint8_t priority_raw, uint32_t subaddr_account, Utf8Box &error, PendingTransactionRaw &pendingTransaction)
     {
@@ -516,14 +517,14 @@ extern "C"
 
         for (int i = 0; i < size; i++) {
             _addresses.push_back(std::string(*addresses));
-            _amounts.push_back(Monero::Wallet::amountFromString(std::string(*amounts)));
+            _amounts.push_back(XCash::Wallet::amountFromString(std::string(*amounts)));
             addresses++;
             amounts++;
         }
 
-        auto priority = static_cast<Monero::PendingTransaction::Priority>(priority_raw);
+        auto priority = static_cast<XCash::PendingTransaction::Priority>(priority_raw);
         std::string _payment_id;
-        Monero::PendingTransaction *transaction;
+        XCash::PendingTransaction *transaction;
 
         if (payment_id != nullptr)
         {
@@ -534,7 +535,7 @@ extern "C"
 
         int status = transaction->status();
 
-        if (status == Monero::PendingTransaction::Status::Status_Error || status == Monero::PendingTransaction::Status::Status_Critical)
+        if (status == XCash::PendingTransaction::Status::Status_Error || status == XCash::PendingTransaction::Status::Status_Critical)
         {
             error = Utf8Box(strdup(transaction->errorString().c_str()));
             return false;
@@ -547,7 +548,7 @@ extern "C"
         pendingTransaction = PendingTransactionRaw(transaction);
         return true;
     }
-
+*/
     bool transaction_commit(PendingTransactionRaw *transaction, Utf8Box &error)
     {
         bool committed = transaction->transaction->commit();
@@ -637,13 +638,13 @@ extern "C"
 
     int64_t *subaddrress_get_all()
     {
-        std::vector<Monero::SubaddressRow *> _subaddresses = m_subaddress->getAll();
+        std::vector<XCash::SubaddressRow *> _subaddresses = m_subaddress->getAll();
         size_t size = _subaddresses.size();
         int64_t *subaddresses = (int64_t *)malloc(size * sizeof(int64_t));
 
         for (int i = 0; i < size; i++)
         {
-            Monero::SubaddressRow *row = _subaddresses[i];
+            XCash::SubaddressRow *row = _subaddresses[i];
             SubaddressRow *_row = new SubaddressRow(row->getRowId(), strdup(row->getAddress().c_str()), strdup(row->getLabel().c_str()));
             subaddresses[i] = reinterpret_cast<int64_t>(_row);
         }
@@ -653,7 +654,7 @@ extern "C"
 
     int32_t subaddrress_size()
     {
-        std::vector<Monero::SubaddressRow *> _subaddresses = m_subaddress->getAll();
+        std::vector<XCash::SubaddressRow *> _subaddresses = m_subaddress->getAll();
         return _subaddresses.size();
     }
 
@@ -674,19 +675,19 @@ extern "C"
 
     int32_t account_size()
     {
-        std::vector<Monero::SubaddressAccountRow *> _accocunts = m_account->getAll();
+        std::vector<XCash::SubaddressAccountRow *> _accocunts = m_account->getAll();
         return _accocunts.size();
     }
 
     int64_t *account_get_all()
     {
-        std::vector<Monero::SubaddressAccountRow *> _accocunts = m_account->getAll();
+        std::vector<XCash::SubaddressAccountRow *> _accocunts = m_account->getAll();
         size_t size = _accocunts.size();
         int64_t *accocunts = (int64_t *)malloc(size * sizeof(int64_t));
 
         for (int i = 0; i < size; i++)
         {
-            Monero::SubaddressAccountRow *row = _accocunts[i];
+            XCash::SubaddressAccountRow *row = _accocunts[i];
             AccountRow *_row = new AccountRow(row->getRowId(), strdup(row->getLabel().c_str()));
             accocunts[i] = reinterpret_cast<int64_t>(_row);
         }
@@ -711,13 +712,13 @@ extern "C"
 
     int64_t *transactions_get_all()
     {
-        std::vector<Monero::TransactionInfo *> transactions = m_transaction_history->getAll();
+        std::vector<XCash::TransactionInfo *> transactions = m_transaction_history->getAll();
         size_t size = transactions.size();
         int64_t *transactionAddresses = (int64_t *)malloc(size * sizeof(int64_t));
 
         for (int i = 0; i < size; i++)
         {
-            Monero::TransactionInfo *row = transactions[i];
+            XCash::TransactionInfo *row = transactions[i];
             TransactionInfoRow *tx = new TransactionInfoRow(row);
             transactionAddresses[i] = reinterpret_cast<int64_t>(tx);
         }
@@ -751,13 +752,14 @@ extern "C"
 
     void on_startup()
     {
-        Monero::Utils::onStartup();
-        Monero::WalletManagerFactory::setLogLevel(0);
+        XCash::Utils::onStartup();
+        XCash::WalletManagerFactory::setLogLevel(0);
     }
 
     void rescan_blockchain()
     {
-        m_wallet->rescanBlockchainAsync();
+        //m_wallet->rescanBlockchainAsync();
+	m_wallet->refreshAsync();
     }
 
     char * get_tx_key(char * txId)

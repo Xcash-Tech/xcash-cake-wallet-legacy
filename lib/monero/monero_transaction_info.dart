@@ -7,8 +7,16 @@ import 'package:cake_wallet/entities/format_amount.dart';
 import 'package:cw_monero/transaction_history.dart';
 
 class MoneroTransactionInfo extends TransactionInfo {
-  MoneroTransactionInfo(this.id, this.height, this.direction, this.date,
-      this.isPending, this.amount, this.accountIndex, this.addressIndex, this.fee);
+  MoneroTransactionInfo(
+      this.id,
+      this.height,
+      this.direction,
+      this.date,
+      this.isPending,
+      this.amount,
+      this.accountIndex,
+      this.addressIndex,
+      this.fee);
 
   MoneroTransactionInfo.fromMap(Map map)
       : id = (map['hash'] ?? '') as String,
@@ -54,7 +62,7 @@ class MoneroTransactionInfo extends TransactionInfo {
 
   @override
   String amountFormatted() =>
-      '${formatAmount(moneroAmountToString(amount: amount))} XMR';
+      '${formatAmount(moneroAmountToString(amount: amount))} XCASH';
 
   @override
   String fiatAmount() => _fiatAmount ?? '';
@@ -64,5 +72,5 @@ class MoneroTransactionInfo extends TransactionInfo {
 
   @override
   String feeFormatted() =>
-      '${formatAmount(moneroAmountToString(amount: fee))} XMR';
+      '${formatAmount(moneroAmountToString(amount: fee))} XCASH';
 }
