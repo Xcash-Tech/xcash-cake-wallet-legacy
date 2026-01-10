@@ -84,11 +84,7 @@ class DashboardPage extends BasePage {
         height: 22.24,
         width: 24,
         color: Theme.of(context).accentTextTheme.display3.backgroundColor);
-    final exchangeImage = Image.asset('assets/images/transfer.png',
-        height: 24.27,
-        width: 22.25,
-        color: Theme.of(context).accentTextTheme.display3.backgroundColor);
-    final buyImage = Image.asset('assets/images/coins.png',
+    final receiveImage = Image.asset('assets/images/download.png',
         height: 22.24,
         width: 24,
         color: Theme.of(context).accentTextTheme.display3.backgroundColor);
@@ -129,15 +125,9 @@ class DashboardPage extends BasePage {
                   title: S.of(context).send,
                   route: Routes.send),
               ActionButton(
-                  image: exchangeImage,
-                  title: S.of(context).exchange,
-                  route: Routes.exchange),
-              ActionButton(
-                  image: buyImage,
-                  title: S.of(context).buy,
-                  onClick: () async =>
-                    await _onClickBuyButton(context),
-              ),
+                  image: receiveImage,
+                  title: S.of(context).receive,
+                  route: Routes.receive),
             ],
           ),
         )

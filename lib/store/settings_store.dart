@@ -188,13 +188,13 @@ abstract class SettingsStoreBase with Store {
             .getBool(PreferencesKey.allowBiometricalAuthenticationKey) ??
         false;
     final legacyTheme =
-        (sharedPreferences.getBool(PreferencesKey.isDarkThemeLegacy) ?? false)
+        (sharedPreferences.getBool(PreferencesKey.isDarkThemeLegacy) ?? true)
             ? ThemeType.dark.index
             : ThemeType.bright.index;
     final savedTheme = ThemeList.deserialize(
         raw: sharedPreferences.getInt(PreferencesKey.currentTheme) ??
             legacyTheme ??
-            0);
+            ThemeType.dark.index);
     final actionListDisplayMode = ObservableList<ActionListDisplayMode>();
     actionListDisplayMode.addAll(deserializeActionlistDisplayModes(
         sharedPreferences.getInt(PreferencesKey.displayActionListModeKey) ??
