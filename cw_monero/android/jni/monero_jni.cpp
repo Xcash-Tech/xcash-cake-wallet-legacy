@@ -2,10 +2,20 @@
 #include <jni.h>
 #include "../../ios/Classes/monero_api.h"
 #include <stdbool.h>
+#include <android/log.h>
+
+// Forward declaration to disable logging before any static initialization
+extern "C" void disable_monero_logging();
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
+    // Disable logging immediately to prevent crash on Android
+    disable_monero_logging();
+    return JNI_VERSION_1_6;
+}
 
 JNIEXPORT void JNICALL
 Java_com_cakewallet_monero_MoneroApi_setNodeAddressJNI(

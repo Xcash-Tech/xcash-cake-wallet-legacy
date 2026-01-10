@@ -71,7 +71,7 @@ class WalletTypeFormState extends State<WalletTypeForm> {
 
   @override
   void initState() {
-    types = [WalletType.bitcoin, WalletType.monero, WalletType.litecoin];
+    types = walletTypes;
     super.initState();
   }
 

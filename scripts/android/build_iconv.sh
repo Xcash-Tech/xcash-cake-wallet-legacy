@@ -1,5 +1,6 @@
 #!/bin/sh
 
+set -e
 . ./config.sh
 export ICONV_FILENAME=libiconv-1.16.tar.gz
 export ICONV_FILE_PATH=$WORKDIR/$ICONV_FILENAME
@@ -13,6 +14,7 @@ for arch in aarch aarch64 i686 x86_64
 do
 
 PREFIX=${WORKDIR}/prefix_${arch}
+PATH="${TOOLCHAIN_BASE_DIR}_${arch}/bin:${ORIGINAL_PATH}"
 
 case $arch in
 	"aarch"	)

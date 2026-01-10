@@ -12,10 +12,24 @@
 void __clear_cache(void* start, void* end) { }
 #include "../External/ios/include/wallet2_api.h"
 #else
-#include "../External/android/x86/include/wallet2_api.h"
+#include "../External/android/arm64-v8a/include/wallet2_api.h"
+#include <android/log.h>
+
+// Disable logging very early to prevent crash on Android (stdout not available)
+// This runs before any static constructors
+__attribute__((constructor(101)))
+static void early_disable_logging() {
+    XCash::WalletManagerFactory::setLogLevel(-1);
+}
 #endif
 
 using namespace std::chrono_literals;
+
+// Disable logging to prevent crash on Android (stdout not available)
+extern "C" void disable_monero_logging() {
+    XCash::WalletManagerFactory::setLogLevel(-1);
+}
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -228,7 +242,8 @@ extern "C"
 
     bool create_wallet(char *path, char *password, char *language, int32_t networkType, char *error)
     {
-        XCash::WalletManagerFactory::setLogLevel(4);
+        // Log level -1 disables logging (crashes on Android due to no stdout)
+        XCash::WalletManagerFactory::setLogLevel(-1);
 
         XCash::NetworkType _networkType = static_cast<XCash::NetworkType>(networkType);
         XCash::WalletManager *walletManager = XCash::WalletManagerFactory::getWalletManager();
@@ -252,6 +267,7 @@ extern "C"
 
     bool restore_wallet_from_seed(char *path, char *password, char *seed, int32_t networkType, uint64_t restoreHeight, char *error)
     {
+        __android_log_print(ANDROID_LOG_INFO, "MoneroAPI", "restore_wallet_from_seed: path=%s, restoreHeight=%llu", path, (unsigned long long)restoreHeight);
         XCash::NetworkType _networkType = static_cast<XCash::NetworkType>(networkType);
         XCash::Wallet *wallet = XCash::WalletManagerFactory::getWalletManager()->recoveryWallet(
             std::string(path),
@@ -446,6 +462,7 @@ extern "C"
 
     void set_refresh_from_block_height(uint64_t height)
     {
+        __android_log_print(ANDROID_LOG_INFO, "MoneroAPI", "set_refresh_from_block_height: height=%llu", (unsigned long long)height);
         get_current_wallet()->setRefreshFromBlockHeight(height);
     }
 
@@ -758,8 +775,9 @@ extern "C"
 
     void rescan_blockchain()
     {
-        //m_wallet->rescanBlockchainAsync();
-	m_wallet->refreshAsync();
+        __android_log_print(ANDROID_LOG_INFO, "MoneroAPI", "rescan_blockchain: calling setRecoveringFromSeed + refreshAsync");
+        m_wallet->setRecoveringFromSeed(true);
+        m_wallet->refreshAsync();
     }
 
     char * get_tx_key(char * txId)

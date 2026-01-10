@@ -1,15 +1,6 @@
 -
-  uri: europe1.xcash.foundation:18281
+  uri: seed2.xcash.tech:18281
   is_default: true
 -
-  uri: europe2.xcash.foundation:18281
-  is_default: false
--
-  uri: europe3.xcash.foundation:18281
-  is_default: false
--
-  uri: xcash-delegate.farmage.cash:18281
-  is_default: false
--
-  uri: vipclub.farmage.cash:18281
+  uri: seed1.xcash.tech:18281
   is_default: false

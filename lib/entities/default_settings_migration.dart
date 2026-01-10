@@ -19,7 +19,7 @@ import 'package:cake_wallet/entities/wallet_info.dart';
 import 'package:cake_wallet/exchange/trade.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
-const newCakeWalletMoneroUri = 'europe2.xcash.foundation:18281';
+const newCakeWalletMoneroUri = 'seed2.xcash.tech:18281';
 const cakeWalletBitcoinElectrumUri = 'electrum.cakewallet.com:50002';
 const cakeWalletLitecoinElectrumUri = 'ltc-electrum.cakewallet.com:50002';
 
@@ -183,16 +183,8 @@ Node getLitecoinDefaultElectrumServer({@required Box<Node> nodes}) {
 }
 
 Node getMoneroDefaultNode({@required Box<Node> nodes}) {
-  final timeZone = DateTime.now().timeZoneOffset.inHours;
-  var nodeUri = '';
-
-  if (timeZone >= 1) {
-    // Eurasia
-    nodeUri = 'europe1.xcash.foundation:18281';
-  } else if (timeZone <= -4) {
-    // America
-    nodeUri = 'europe2.xcash.foundation:18281';
-  }
+  // Default to seed2.xcash.tech
+  const nodeUri = 'seed2.xcash.tech:18281';
 
   return nodes.values
           .firstWhere((Node node) => node.uri == nodeUri, orElse: () => null) ??
@@ -221,9 +213,8 @@ Future<void> replaceDefaultNode(
     {@required SharedPreferences sharedPreferences,
     @required Box<Node> nodes}) async {
   const nodesForReplace = <String>[
-    'europe1.xcash.foundation:18281',
-    'europe2.xcash.foundation:18281',
-    'europe3.xcash.foundation:18281'
+    'seed1.xcash.tech:18281',
+    'seed2.xcash.tech:18281'
   ];
   final currentNodeId = sharedPreferences.getInt('current_node_id');
   final currentNode =

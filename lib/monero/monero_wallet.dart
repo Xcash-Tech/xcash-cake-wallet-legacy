@@ -252,6 +252,7 @@ abstract class MoneroWalletBase extends WalletBase<MoneroBalance,
 
   @override
   Future<void> rescan({int height}) async {
+    print('MoneroWallet.rescan: height=$height');
     walletInfo.restoreHeight = height;
     walletInfo.isRecovery = true;
     monero_wallet.setRefreshFromBlockHeight(height: height);

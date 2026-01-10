@@ -35,7 +35,8 @@ dependencies:
   provider: ^5.0.0
   rxdart: ^0.26.0
   yaml: ^2.1.16
-  barcode_scan: any
+  barcode_scan:
+    path: ./packages/barcode_scan
   http: ^0.12.0+2
   path_provider: ^1.3.0
   mobx: ^1.2.1+2

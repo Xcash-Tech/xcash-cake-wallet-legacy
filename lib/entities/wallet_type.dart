@@ -5,8 +5,6 @@ part 'wallet_type.g.dart';
 
 const walletTypes = [
   WalletType.monero,
-  WalletType.bitcoin,
-  WalletType.litecoin
 ];
 const walletTypeTypeId = 5;
 
@@ -54,7 +52,7 @@ WalletType deserializeFromInt(int raw) {
 String walletTypeToString(WalletType type) {
   switch (type) {
     case WalletType.monero:
-      return 'Monero';
+      return 'X-Cash';
     case WalletType.bitcoin:
       return 'Bitcoin';
     case WalletType.litecoin:
@@ -67,7 +65,7 @@ String walletTypeToString(WalletType type) {
 String walletTypeToDisplayName(WalletType type) {
   switch (type) {
     case WalletType.monero:
-      return 'Monero';
+      return 'X-Cash';
     case WalletType.bitcoin:
       return 'Bitcoin (Electrum)';
     case WalletType.litecoin:

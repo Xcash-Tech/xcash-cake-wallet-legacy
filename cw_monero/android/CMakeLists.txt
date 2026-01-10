@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.4.1)
 add_library( cw_monero
              SHARED
              ./jni/monero_jni.cpp
+             ./jni/mining_stubs.cpp
              ../ios/Classes/monero_api.cpp)
 
              find_library( log-lib log )
@@ -18,6 +19,14 @@ set(EXTERNAL_LIBS_DIR ${CMAKE_SOURCE_DIR}/../ios/External/android)
 add_library(sodium STATIC IMPORTED)
 set_target_properties(sodium PROPERTIES IMPORTED_LOCATION
         ${EXTERNAL_LIBS_DIR}/${ANDROID_ABI}/lib/libsodium.a)
+
+############
+# Clang RT builtins (for outline atomics)
+############
+
+add_library(clang_rt_builtins STATIC IMPORTED)
+set_target_properties(clang_rt_builtins PROPERTIES IMPORTED_LOCATION
+        ${EXTERNAL_LIBS_DIR}/${ANDROID_ABI}/lib/libclang_rt.builtins-aarch64-android.a)
 
 ############
 # OpenSSL
@@ -91,9 +100,9 @@ add_library(cryptonote_basic STATIC IMPORTED)
 set_target_properties(cryptonote_basic PROPERTIES IMPORTED_LOCATION
         ${EXTERNAL_LIBS_DIR}/${ANDROID_ABI}/lib/monero/libcryptonote_basic.a)
 
-add_library(cryptonote_format_utils_basic STATIC IMPORTED)
-set_target_properties(cryptonote_format_utils_basic PROPERTIES IMPORTED_LOCATION
-        ${EXTERNAL_LIBS_DIR}/${ANDROID_ABI}/lib/monero/libcryptonote_format_utils_basic.a)        
+#add_library(cryptonote_format_utils_basic STATIC IMPORTED)
+#set_target_properties(cryptonote_format_utils_basic PROPERTIES IMPORTED_LOCATION
+#        ${EXTERNAL_LIBS_DIR}/${ANDROID_ABI}/lib/monero/libcryptonote_format_utils_basic.a)        
 
 add_library(mnemonics STATIC IMPORTED)
 set_target_properties(mnemonics PROPERTIES IMPORTED_LOCATION
@@ -193,7 +202,7 @@ target_link_libraries(  cw_monero
                         wallet
                         cryptonote_core
                         cryptonote_basic
-                        cryptonote_format_utils_basic
+                        #cryptonote_format_utils_basic
                         mnemonics
                         ringct
                         ringct_basic
@@ -230,5 +239,8 @@ target_link_libraries(  cw_monero
                         crypto
                         
                         sodium
+
+                        atomic
+                        clang_rt_builtins
 
                        ${log-lib} )

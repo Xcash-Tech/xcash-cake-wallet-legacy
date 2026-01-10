@@ -178,6 +178,7 @@ class MoneroWalletService extends WalletService<
       MoneroRestoreWalletFromSeedCredentials credentials) async {
     try {
       final path = await pathForWallet(name: credentials.name, type: getType());
+      print('MoneroWalletService.restoreFromSeed: path=$path, restoreHeight=${credentials.height}');
       await monero_wallet_manager.restoreFromSeed(
           path: path,
           password: credentials.password,

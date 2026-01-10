@@ -23,6 +23,11 @@ void startAuthenticationStateChange(AuthenticationStore authenticationStore,
       return;
     }
 
+    // Wait for navigator to be ready
+    if (navigatorKey.currentState == null) {
+      return;
+    }
+
     if (state == AuthenticationState.allowed) {
       await navigatorKey.currentState
           .pushNamedAndRemoveUntil(Routes.dashboard, (route) => false);

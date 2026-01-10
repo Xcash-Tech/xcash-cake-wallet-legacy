@@ -73,7 +73,6 @@
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
-
 # External libs
 monero_android/
 android/app/.externalNativeBuild/
@@ -102,6 +101,15 @@ ios/Flutter/.last_build_id
 **/google-services.json
 **/GoogleService-Info.plist
 
-
 \#*\#
 .\#*
+
+# FVM Version Cache
+.fvm/
+/tmp
+# Keystores
+*.keystore
+*.jks
+android/app/debug.keystore
+android/debug.keystore
+tmp/
