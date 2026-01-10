@@ -203,6 +203,12 @@ extern "C"
 
     void change_current_wallet(XCash::Wallet *wallet)
     {
+        // Close the old wallet if it exists and is different from the new one
+        if (m_wallet != nullptr && m_wallet != wallet)
+        {
+            XCash::WalletManagerFactory::getWalletManager()->closeWallet(m_wallet);
+        }
+        
         m_wallet = wallet;
         m_listener = nullptr;
         

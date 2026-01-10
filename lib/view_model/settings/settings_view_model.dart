@@ -153,13 +153,6 @@ abstract class SettingsViewModelBase with Store {
             onItemSelected: (ThemeBase theme) =>
                 _settingsStore.currentTheme = theme)
       ],
-      [
-        RegularListItem(
-          title: S.current.settings_terms_and_conditions,
-          handler: (BuildContext context) =>
-              Navigator.of(context).pushNamed(Routes.readDisclaimer),
-        )
-      ],
       [VersionListItem(title: currentVersion)]
     ];
   }

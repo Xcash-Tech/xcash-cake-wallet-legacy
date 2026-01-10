@@ -182,7 +182,7 @@ class App extends StatelessWidget {
       final authenticationStore = getIt.get<AuthenticationStore>();
       final initialRoute =
           authenticationStore.state == AuthenticationState.denied
-              ? Routes.disclaimer
+              ? Routes.welcome
               : Routes.login;
       final currentTheme = settingsStore.currentTheme;
       final statusBarBrightness = currentTheme.type == ThemeType.dark

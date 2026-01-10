@@ -110,6 +110,10 @@ abstract class MoneroWalletBase extends WalletBase<MoneroBalance,
     _listener?.stop();
     _onAccountChangeReaction?.reaction?.dispose();
     _autoSaveTimer?.cancel();
+    // Note: Don't call closeCurrentWallet() here - when switching wallets,
+    // the new wallet is opened before close() is called on the old one,
+    // so closeCurrentWallet() would close the NEW wallet instead.
+    // The native wallet is properly closed by openWallet() before opening a new one.
   }
 
   @override
