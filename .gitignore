@@ -113,3 +113,6 @@ ios/Flutter/.last_build_id
 android/app/debug.keystore
 android/debug.keystore
 tmp/
+
+# Local build artifacts (do not commit)
+xcash-wallet-cli
