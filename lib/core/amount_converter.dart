@@ -2,7 +2,8 @@ import 'package:intl/intl.dart';
 import 'package:cake_wallet/entities/crypto_currency.dart';
 
 class AmountConverter {
-  static const _moneroAmountLength = 12;
+  // X-CASH: display amounts with 2 decimals.
+  static const _moneroAmountLength = 2;
   static const _moneroAmountDivider = 1000000;
   static const _litecoinAmountDivider = 100000000;
   static const _ethereumAmountDivider = 1000000000000000000;
@@ -15,7 +16,7 @@ class AmountConverter {
     ..minimumFractionDigits = 1;
   static final _moneroAmountFormat = NumberFormat()
     ..maximumFractionDigits = _moneroAmountLength
-    ..minimumFractionDigits = 1;
+    ..minimumFractionDigits = _moneroAmountLength;
 
   static double amountIntToDouble(CryptoCurrency cryptoCurrency, int amount) {
     switch (cryptoCurrency) {
@@ -66,7 +67,7 @@ class AmountConverter {
       cryptoAmountToDouble(amount: amount, divider: _moneroAmountDivider);
 
   static int _moneroParseAmount(String amount) =>
-      _moneroAmountFormat.parse(amount).toInt();
+      (double.parse(amount.replaceAll(',', '.')) * _moneroAmountDivider).toInt();
 
   static String _bitcoinAmountToString(int amount) =>
       _bitcoinAmountFormat.format(

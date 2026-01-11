@@ -5,9 +5,7 @@ import 'package:cake_wallet/view_model/dashboard/dashboard_view_model.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:cake_wallet/src/screens/dashboard/widgets/header_row.dart';
 import 'package:cake_wallet/src/screens/dashboard/widgets/date_section_raw.dart';
-import 'package:cake_wallet/src/screens/dashboard/widgets/trade_row.dart';
 import 'package:cake_wallet/src/screens/dashboard/widgets/transaction_raw.dart';
-import 'package:cake_wallet/view_model/dashboard/trade_list_item.dart';
 import 'package:cake_wallet/view_model/dashboard/transaction_list_item.dart';
 import 'package:cake_wallet/view_model/dashboard/date_section_item.dart';
 import 'package:intl/intl.dart';
@@ -59,22 +57,6 @@ class TransactionsPage extends StatelessWidget {
                               formattedAmount: item.formattedCryptoAmount,
                               formattedFiatAmount: item.formattedFiatAmount,
                               isPending: transaction.isPending));
-                        }
-
-                        if (item is TradeListItem) {
-                          final trade = item.trade;
-
-                          return Observer(builder: (_) => TradeRow(
-                              onTap: () => Navigator.of(context).pushNamed(
-                                  Routes.tradeDetails,
-                                  arguments: trade),
-                              provider: trade.provider,
-                              from: trade.from,
-                              to: trade.to,
-                              createdAtFormattedDate:
-                              DateFormat('HH:mm').format(trade.createdAt),
-                              formattedAmount: item.tradeFormattedAmount
-                          ));
                         }
 
                         if (item is OrderListItem) {

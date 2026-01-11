@@ -179,7 +179,8 @@ abstract class OutputBase with Store {
 
     switch (_wallet.type) {
       case WalletType.monero:
-        maximumFractionDigits = 12;
+        // X-CASH: show/send with 2 decimals.
+        maximumFractionDigits = 2;
         break;
       case WalletType.bitcoin:
         maximumFractionDigits = 8;
