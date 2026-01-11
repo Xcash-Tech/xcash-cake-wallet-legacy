@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Explorer-aligned dark theme background (#050505). -->
+    <color name="xcash_background">#050505</color>
+</resources>

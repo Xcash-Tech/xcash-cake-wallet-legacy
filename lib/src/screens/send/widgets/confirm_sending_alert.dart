@@ -1,4 +1,3 @@
-import 'package:cake_wallet/palette.dart';
 import 'package:cake_wallet/view_model/send/output.dart';
 import 'package:flutter/material.dart';
 import 'package:cake_wallet/src/widgets/base_alert_dialog.dart';
@@ -189,7 +188,7 @@ class ConfirmSendingAlertContentState extends State<ConfirmSendingAlertContent> 
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
                                 fontFamily: 'Lato',
-                                color: PaletteDark.pigeonBlue,
+                                color: Theme.of(context).primaryTextTheme.caption.color,
                                 decoration: TextDecoration.none,
                               ),
                             )
@@ -239,7 +238,7 @@ class ConfirmSendingAlertContentState extends State<ConfirmSendingAlertContent> 
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
                                     fontFamily: 'Lato',
-                                    color: PaletteDark.pigeonBlue,
+                                    color: Theme.of(context).primaryTextTheme.caption.color,
                                     decoration: TextDecoration.none,
                                   ),
                                 )
@@ -287,7 +286,7 @@ class ConfirmSendingAlertContentState extends State<ConfirmSendingAlertContent> 
                                             fontSize: 12,
                                             fontWeight: FontWeight.w600,
                                             fontFamily: 'Lato',
-                                            color: PaletteDark.pigeonBlue,
+                                            color: Theme.of(context).primaryTextTheme.caption.color,
                                             decoration: TextDecoration.none,
                                           ),
                                         )
@@ -304,7 +303,7 @@ class ConfirmSendingAlertContentState extends State<ConfirmSendingAlertContent> 
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w600,
                                                 fontFamily: 'Lato',
-                                                color: PaletteDark.pigeonBlue,
+                                                color: Theme.of(context).primaryTextTheme.caption.color,
                                                 decoration: TextDecoration.none,
                                               ),
                                             )
@@ -322,7 +321,7 @@ class ConfirmSendingAlertContentState extends State<ConfirmSendingAlertContent> 
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
                                   fontFamily: 'Lato',
-                                  color: PaletteDark.pigeonBlue,
+                                  color: Theme.of(context).primaryTextTheme.caption.color,
                                   decoration: TextDecoration.none,
                               ),
                             ),

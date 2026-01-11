@@ -11,6 +11,7 @@ import 'package:cake_wallet/core/wallet_credentials.dart';
 import 'package:cake_wallet/entities/wallet_type.dart';
 import 'package:cake_wallet/view_model/wallet_creation_vm.dart';
 import 'package:cake_wallet/entities/wallet_info.dart';
+import 'package:cake_wallet/utils/mnemonic_sanitizer.dart';
 
 part 'wallet_restoration_from_seed_vm.g.dart';
 
@@ -38,14 +39,18 @@ abstract class WalletRestorationFromSeedVMBase extends WalletCreationVM
   @override
   WalletCredentials getCredentials(dynamic options) {
     final password = generateWalletPassword(type);
+    final sanitizedSeed = sanitizeMnemonic(seed);
 
     switch (type) {
       case WalletType.monero:
         return MoneroRestoreWalletFromSeedCredentials(
-            name: name, height: height, mnemonic: seed, password: password);
+            name: name,
+            height: height,
+            mnemonic: sanitizedSeed,
+            password: password);
       case WalletType.bitcoin:
         return BitcoinRestoreWalletFromSeedCredentials(
-            name: name, mnemonic: seed, password: password);
+            name: name, mnemonic: sanitizedSeed, password: password);
       default:
         return null;
     }

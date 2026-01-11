@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:cake_wallet/palette.dart';
 
 class BaseAlertDialog extends StatelessWidget {
   String get titleText => '';
@@ -116,7 +115,9 @@ class BaseAlertDialog extends StatelessWidget {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
           child: Container(
-            decoration: BoxDecoration(color: PaletteDark.darkNightBlue.withOpacity(0.75)),
+            decoration: BoxDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.75),
+            ),
             child: Center(
               child: GestureDetector(
                 onTap: () => null,

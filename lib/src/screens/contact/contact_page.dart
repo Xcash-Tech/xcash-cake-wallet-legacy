@@ -1,4 +1,3 @@
-import 'package:cake_wallet/palette.dart';
 import 'package:cake_wallet/utils/show_pop_up.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -95,7 +94,8 @@ class ContactPage extends BasePage {
                       controller: _addressController,
                       options: [AddressTextFieldOption.qrCode],
                       buttonColor: Theme.of(context).accentTextTheme.display2.color,
-                      iconColor: PaletteDark.gray,
+                      iconColor: Theme.of(context).iconTheme.color ??
+                          Theme.of(context).hintColor,
                       borderColor: Theme.of(context).primaryTextTheme.title.backgroundColor,
                       validator: AddressValidator(
                           type: contactViewModel.currency),

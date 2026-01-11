@@ -12,10 +12,12 @@ import 'package:cake_wallet/generated/i18n.dart';
 import 'package:flutter/widgets.dart';
 
 class SeedWidget extends StatefulWidget {
-  SeedWidget({Key key, this.language, this.type}) : super(key: key);
+  SeedWidget({Key key, this.language, this.type, this.onChanged})
+      : super(key: key);
 
   final String language;
   final WalletType type;
+  final ValueChanged<String> onChanged;
 
   @override
   SeedWidgetState createState() => SeedWidgetState(language, type);
@@ -52,6 +54,7 @@ class SeedWidgetState extends State<SeedWidget> {
   void initState() {
     super.initState();
     _showPlaceholder = true;
+    controller.addListener(() => widget.onChanged?.call(controller.text));
   }
 
   void changeSeedLanguage(String language) {

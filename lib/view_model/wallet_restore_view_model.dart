@@ -11,6 +11,7 @@ import 'package:cake_wallet/entities/wallet_type.dart';
 import 'package:cake_wallet/entities/wallet_info.dart';
 import 'package:cake_wallet/view_model/wallet_creation_vm.dart';
 import 'package:cake_wallet/monero/monero_wallet_service.dart';
+import 'package:cake_wallet/utils/mnemonic_sanitizer.dart';
 
 part 'wallet_restore_view_model.g.dart';
 
@@ -54,7 +55,7 @@ abstract class WalletRestoreViewModelBase extends WalletCreationVM with Store {
     print('WalletRestoreViewModel.getCredentials: height=$height, options=$options');
 
     if (mode == WalletRestoreMode.seed) {
-      final seed = options['seed'] as String;
+      final seed = sanitizeMnemonic(options['seed'] as String);
 
       switch (type) {
         case WalletType.monero:

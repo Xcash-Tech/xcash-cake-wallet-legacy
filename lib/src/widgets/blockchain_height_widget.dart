@@ -7,12 +7,13 @@ import 'package:cake_wallet/src/widgets/base_text_form_field.dart';
 
 class BlockchainHeightWidget extends StatefulWidget {
   BlockchainHeightWidget({GlobalKey key, this.onHeightChange, this.focusNode,
-    this.onHeightOrDateEntered})
+    this.onHeightOrDateEntered, this.initialHeight})
       : super(key: key);
 
   final Function(int) onHeightChange;
   final Function(bool) onHeightOrDateEntered;
   final FocusNode focusNode;
+  final int initialHeight;
 
   @override
   State<StatefulWidget> createState() => BlockchainHeightState();
@@ -44,6 +45,10 @@ class BlockchainHeightState extends State<BlockchainHeightWidget> {
         _changeHeight(0);
       }
     });
+
+    if (widget.initialHeight != null) {
+      restoreHeightController.text = '${widget.initialHeight}';
+    }
 
     super.initState();
   }

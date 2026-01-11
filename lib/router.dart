@@ -61,6 +61,7 @@ import 'package:cake_wallet/src/screens/faq/faq_page.dart';
 import 'package:cake_wallet/src/screens/trade_details/trade_details_page.dart';
 import 'package:cake_wallet/src/screens/welcome/create_welcome_page.dart';
 import 'package:cake_wallet/src/screens/new_wallet/new_wallet_type_page.dart';
+import 'package:cake_wallet/src/screens/new_wallet/auto_new_wallet_page.dart';
 import 'package:cake_wallet/src/screens/send/send_template_page.dart';
 import 'package:cake_wallet/src/screens/exchange/exchange_template_page.dart';
 import 'package:cake_wallet/src/screens/exchange_trade/exchange_confirm_page.dart';
@@ -82,6 +83,11 @@ Route<dynamic> createRoute(RouteSettings settings) {
           fullscreenDialog: true);
 
     case Routes.newWalletType:
+      if (walletTypes.length == 1) {
+        return CupertinoPageRoute<void>(
+            builder: (_) => AutoNewWalletPage(type: walletTypes.first));
+      }
+
       return CupertinoPageRoute<void>(
           builder: (_) => getIt.get<NewWalletTypePage>(
               param1: (BuildContext context, WalletType type) =>
@@ -108,6 +114,12 @@ Route<dynamic> createRoute(RouteSettings settings) {
           builder: (_) => getIt.get<SetupPinCodePage>(param1: callback));
 
     case Routes.restoreWalletType:
+      if (walletTypes.length == 1) {
+        return CupertinoPageRoute<void>(
+            builder: (_) =>
+                getIt.get<WalletRestorePage>(param1: walletTypes.first));
+      }
+
       return CupertinoPageRoute<void>(
           builder: (_) => getIt.get<NewWalletTypePage>(
               param1: (BuildContext context, WalletType type) =>

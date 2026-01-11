@@ -56,7 +56,7 @@ abstract class SettingsViewModelBase with Store {
         _biometricAuth = BiometricAuth() {
     currentVersion = '';
     PackageInfo.fromPlatform().then(
-        (PackageInfo packageInfo) => currentVersion = packageInfo.version);
+        (PackageInfo packageInfo) => currentVersion = '${packageInfo.version} beta');
 
     final priority = _settingsStore.priority[wallet.type];
     final priorities = priorityForWalletType(wallet.type);

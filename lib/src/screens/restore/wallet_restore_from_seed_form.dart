@@ -15,7 +15,8 @@ class WalletRestoreFromSeedForm extends StatefulWidget {
       @required this.displayBlockHeightSelector,
       @required this.type,
       this.blockHeightFocusNode,
-      this.onHeightOrDateEntered})
+      this.onHeightOrDateEntered,
+      this.onSeedEntered})
       : super(key: key);
 
   final WalletType type;
@@ -23,6 +24,7 @@ class WalletRestoreFromSeedForm extends StatefulWidget {
   final bool displayBlockHeightSelector;
   final FocusNode blockHeightFocusNode;
   final Function(bool) onHeightOrDateEntered;
+  final Function(bool) onSeedEntered;
 
   @override
   WalletRestoreFromSeedFormState createState() =>
@@ -52,7 +54,11 @@ class WalletRestoreFromSeedFormState extends State<WalletRestoreFromSeedForm> {
         padding: EdgeInsets.only(left: 24, right: 24),
         child: Column(children: [
           SeedWidget(
-              key: seedWidgetStateKey, language: language, type: widget.type),
+              key: seedWidgetStateKey,
+              language: language,
+              type: widget.type,
+              onChanged: (text) =>
+                  widget.onSeedEntered?.call(text?.trim()?.isNotEmpty ?? false)),
           if (widget.displayLanguageSelector)
             GestureDetector(
                 onTap: () async {
@@ -79,7 +85,8 @@ class WalletRestoreFromSeedFormState extends State<WalletRestoreFromSeedForm> {
             BlockchainHeightWidget(
                 focusNode: widget.blockHeightFocusNode,
                 key: blockchainHeightKey,
-                onHeightOrDateEntered: widget.onHeightOrDateEntered)
+                onHeightOrDateEntered: widget.onHeightOrDateEntered,
+                initialHeight: 0)
         ]));
   }
 

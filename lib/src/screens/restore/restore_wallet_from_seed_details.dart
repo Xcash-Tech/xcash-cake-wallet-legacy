@@ -107,7 +107,8 @@ class _RestoreFromSeedDetailsFormState
                   onHeightChange: (height) {
                     widget.walletRestorationFromSeedVM.height = height;
                     print(height);
-                  }),
+                  },
+                  initialHeight: 0),
               Padding(
                 padding: EdgeInsets.only(left: 40, right: 40, top: 24),
                 child: Text(

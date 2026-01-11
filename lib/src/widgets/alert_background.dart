@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:cake_wallet/palette.dart';
 
 class AlertBackground extends StatelessWidget {
   AlertBackground({@required this.child});
@@ -17,7 +16,9 @@ class AlertBackground extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
         child: Container(
-          decoration: BoxDecoration(color: PaletteDark.darkNightBlue.withOpacity(0.75)),
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.75),
+          ),
           child: child,
         ),
       ),

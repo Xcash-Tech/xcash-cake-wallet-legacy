@@ -88,3 +88,33 @@ class PaletteDark {
   static const Color indicatorVioletBlue = Color.fromRGBO(59, 72, 119, 1.0);
   static const Color granite = Color.fromRGBO(48, 51, 60, 1.0);
 }
+
+/// Dark theme palette aligned with the xcash explorer frontend.
+class PaletteExplorerDark {
+  static const Color background = Color(0xFF050505);
+  static const Color foreground = Color(0xFFF3F4F6);
+
+  // Tailwind zinc palette (common surfaces/borders in the explorer UI).
+  static const Color zinc900 = Color(0xFF18181B);
+  static const Color zinc800 = Color(0xFF27272A);
+  static const Color zinc700 = Color(0xFF3F3F46);
+  static const Color zinc500 = Color(0xFF71717A);
+  static const Color zinc400 = Color(0xFFA1A1AA);
+  static const Color zinc300 = Color(0xFFD4D4D8);
+
+  // Tailwind indigo palette (primary accent in the explorer UI).
+  static const Color indigo600 = Color(0xFF4F46E5);
+  static const Color indigo500 = Color(0xFF6366F1);
+  static const Color indigo400 = Color(0xFF818CF8);
+  static const Color indigo300 = Color(0xFFA5B4FC);
+
+  // Approximation of the explorer's subtle indigo glow over a near-black background:
+  // rgba(99, 102, 241, 0.08) composited over #000.
+  static const Color indigoGlow = Color(0xFF080813);
+
+  // Semantic aliases (used by ThemeData).
+  static const Color divider = zinc800;
+  static const Color hint = zinc500;
+  static const Color primary = indigo500;
+  static const Color link = indigo400;
+}

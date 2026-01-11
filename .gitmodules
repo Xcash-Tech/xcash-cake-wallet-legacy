@@ -4,3 +4,6 @@
 [submodule ".vendor/inject.dart"]
 	path = .vendor/inject.dart
 	url = https://github.com/google/inject.dart
+[submodule "external/xcash-tech-core"]
+	path = external/xcash-tech-core
+	url = git@github.com:Xcash-Tech/xcash-tech-core.git

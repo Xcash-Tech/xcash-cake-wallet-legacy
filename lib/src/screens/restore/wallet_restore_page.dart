@@ -15,6 +15,7 @@ import 'package:cake_wallet/src/screens/restore/wallet_restore_from_keys_form.da
 import 'package:cake_wallet/src/screens/restore/wallet_restore_from_seed_form.dart';
 import 'package:cake_wallet/src/widgets/primary_button.dart';
 import 'package:cake_wallet/utils/show_pop_up.dart';
+import 'package:cake_wallet/utils/mnemonic_sanitizer.dart';
 
 class WalletRestorePage extends BasePage {
   WalletRestorePage(this.walletRestoreViewModel)
@@ -25,6 +26,34 @@ class WalletRestorePage extends BasePage {
         _pages = [],
         _blockHeightFocusNode = FocusNode(),
         _controller = PageController(initialPage: 0) {
+    void updateRestoreButtonEnabled() {
+      if (walletRestoreViewModel.mode != WalletRestoreMode.seed) {
+        return;
+      }
+
+      final seed = sanitizeMnemonic(walletRestoreFromSeedFormKey
+              .currentState?.seedWidgetStateKey?.currentState?.text ??
+          '');
+      final hasSeed = seed.isNotEmpty;
+
+      var hasHeightOrDate = true;
+      if (walletRestoreViewModel.hasBlockchainHeightLanguageSelector) {
+        hasHeightOrDate = (walletRestoreFromSeedFormKey
+                    .currentState
+                    ?.blockchainHeightKey
+                    ?.currentState
+                    ?.restoreHeightController
+                    ?.text
+                    ?.isNotEmpty ??
+                false) ||
+            (walletRestoreFromSeedFormKey.currentState?.blockchainHeightKey
+                    ?.currentState?.dateController?.text?.isNotEmpty ??
+                false);
+      }
+
+      walletRestoreViewModel.isButtonEnabled = hasSeed && hasHeightOrDate;
+    }
+
     walletRestoreViewModel.availableModes.forEach((mode) {
       switch (mode) {
         case WalletRestoreMode.seed:
@@ -36,8 +65,8 @@ class WalletRestorePage extends BasePage {
               type: walletRestoreViewModel.type,
               key: walletRestoreFromSeedFormKey,
               blockHeightFocusNode: _blockHeightFocusNode,
-              onHeightOrDateEntered: (value) =>
-                  walletRestoreViewModel.isButtonEnabled = value));
+              onHeightOrDateEntered: (_) => updateRestoreButtonEnabled(),
+              onSeedEntered: (_) => updateRestoreButtonEnabled()));
           break;
         case WalletRestoreMode.keys:
           _pages.add(WalletRestoreFromKeysFrom(
@@ -93,15 +122,22 @@ class WalletRestorePage extends BasePage {
     reaction((_) => walletRestoreViewModel.mode, (WalletRestoreMode mode) {
       walletRestoreViewModel.isButtonEnabled = false;
 
-      walletRestoreFromSeedFormKey.currentState.blockchainHeightKey.currentState
-          .restoreHeightController.text = '';
-      walletRestoreFromSeedFormKey.currentState.blockchainHeightKey.currentState
-          .dateController.text = '';
+      if (walletRestoreViewModel.hasBlockchainHeightLanguageSelector) {
+        final seedHeightState =
+            walletRestoreFromSeedFormKey.currentState?.blockchainHeightKey?.currentState;
+        if (seedHeightState != null) {
+          seedHeightState.dateController.text = '';
+          seedHeightState.restoreHeightController.text =
+              mode == WalletRestoreMode.seed ? '0' : '';
+        }
+      }
 
-      walletRestoreFromKeysFormKey.currentState.blockchainHeightKey.currentState
-          .restoreHeightController.text = '';
-      walletRestoreFromKeysFormKey.currentState.blockchainHeightKey.currentState
-          .dateController.text = '';
+      final keysHeightState =
+          walletRestoreFromKeysFormKey.currentState?.blockchainHeightKey?.currentState;
+      if (keysHeightState != null) {
+        keysHeightState.restoreHeightController.text = '';
+        keysHeightState.dateController.text = '';
+      }
     });
 
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -153,8 +189,8 @@ class WalletRestorePage extends BasePage {
     final credentials = <String, dynamic>{};
 
     if (walletRestoreViewModel.mode == WalletRestoreMode.seed) {
-      credentials['seed'] = walletRestoreFromSeedFormKey
-          .currentState.seedWidgetStateKey.currentState.text;
+      credentials['seed'] = sanitizeMnemonic(walletRestoreFromSeedFormKey
+          .currentState.seedWidgetStateKey.currentState.text);
 
       if (walletRestoreViewModel.hasBlockchainHeightLanguageSelector) {
         credentials['height'] = walletRestoreFromSeedFormKey

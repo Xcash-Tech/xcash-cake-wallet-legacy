@@ -63,7 +63,7 @@ CakeWallet is an open-source cryptocurrency wallet application for Android and i
 
 ### Git Workflow
 - Feature branches for new development
-- Semantic versioning (current: 4.2.7+62)
+- Semantic versioning (current: 0.0.3+62 beta)
 - Build numbers increment with releases
 
 ## Domain Context

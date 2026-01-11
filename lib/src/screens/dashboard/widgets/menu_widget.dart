@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:cake_wallet/palette.dart';
 import 'package:cake_wallet/view_model/dashboard/dashboard_view_model.dart';
 import 'package:cake_wallet/entities/wallet_type.dart';
 import 'package:cake_wallet/src/screens/dashboard/wallet_menu.dart';
@@ -90,7 +89,7 @@ class MenuWidgetState extends State<MenuWidget> {
               width: 4,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(2)),
-                  color: PaletteDark.gray),
+                  color: Theme.of(context).indicatorColor),
             )),
         SizedBox(width: 12),
         Expanded(

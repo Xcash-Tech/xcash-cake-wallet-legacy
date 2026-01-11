@@ -24,7 +24,7 @@ abstract class BasePage extends StatelessWidget {
 
   Color get backgroundLightColor => Colors.white;
 
-  Color get backgroundDarkColor => PaletteDark.backgroundColor;
+  Color get backgroundDarkColor => PaletteExplorerDark.background;
 
   Color get titleColor => null;
 

@@ -15,10 +15,25 @@ set -e
 
 CONTAINER_NAME="xcash-builder"
 XCASH_DIR="/opt/android/xcash-tech-core"
+HOST_XCASH_DIR="/opt/android/cake_wallet/external/xcash-tech-core"
 PREFIX_DIR="/opt/android/prefix_aarch64"
 NDK_DIR="/opt/android/android-ndk-r25c"
+DEST_BASE="/opt/android/cake_wallet/cw_monero/ios/External/android/arm64-v8a"
 
 echo "=== Building xcash-tech-core wallet_api for Android arm64-v8a ==="
+
+# Step 0: Sync core sources from mounted CakeWallet repo (if present)
+echo ""
+echo "=== Step 0: Sync xcash-tech-core sources ==="
+docker exec ${CONTAINER_NAME} bash -lc "
+if [ -d \"${HOST_XCASH_DIR}\" ]; then
+  echo \"Syncing from ${HOST_XCASH_DIR} -> ${XCASH_DIR}\";
+  rm -rf \"${XCASH_DIR}\";
+  cp -a \"${HOST_XCASH_DIR}\" \"${XCASH_DIR}\";
+else
+  echo \"${HOST_XCASH_DIR} not found; using existing ${XCASH_DIR}\";
+fi
+"
 
 # Step 1: Configure with CMake
 echo ""
@@ -63,6 +78,21 @@ cmake .. \
 echo ""
 echo "=== Step 2: Build wallet_api ==="
 docker exec ${CONTAINER_NAME} bash -c "cd ${XCASH_DIR}/build && make -j4 wallet_api"
+
+echo ""
+echo "=== Step 3: Copy wallet libs to CakeWallet ==="
+docker exec ${CONTAINER_NAME} bash -lc "
+set -e
+DEST_LIB='${DEST_BASE}/lib/monero'
+DEST_INCLUDE='${DEST_BASE}/include'
+mkdir -p \"\${DEST_LIB}\" \"\${DEST_INCLUDE}\"
+
+cp -f '${XCASH_DIR}/build/lib/libwallet_api.a' \"\${DEST_LIB}/libwallet_api.a\"
+cp -f '${XCASH_DIR}/build/lib/libwallet.a' \"\${DEST_LIB}/libwallet.a\"
+cp -f '${XCASH_DIR}/src/wallet/api/wallet2_api.h' \"\${DEST_INCLUDE}/wallet2_api.h\"
+
+ls -la \"\${DEST_LIB}/libwallet_api.a\" \"\${DEST_LIB}/libwallet.a\" \"\${DEST_INCLUDE}/wallet2_api.h\"
+"
 
 echo ""
 echo "=== Build Complete ==="

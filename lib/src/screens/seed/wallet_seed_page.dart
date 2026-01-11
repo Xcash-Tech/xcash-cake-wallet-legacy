@@ -3,6 +3,8 @@ import 'package:cake_wallet/themes/theme_base.dart';
 import 'package:cake_wallet/src/widgets/alert_with_two_actions.dart';
 import 'package:cake_wallet/utils/show_bar.dart';
 import 'package:cake_wallet/utils/show_pop_up.dart';
+import 'package:cake_wallet/di.dart';
+import 'package:cake_wallet/store/authentication_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -42,6 +44,10 @@ class WalletSeedPage extends BasePage {
           false;
 
       if (confirmed) {
+        final authStore = getIt.get<AuthenticationStore>();
+        if (authStore.state != AuthenticationState.allowed) {
+          authStore.allowed();
+        }
         Navigator.of(context).popUntil((route) => route.isFirst);
       }
 
