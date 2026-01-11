@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobx/mobx.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 
 part 'backup_view_model.g.dart';
 
@@ -73,9 +74,17 @@ abstract class BackupViewModelBase with Store {
 
   @action
   Future<void> saveToDownload(String name, List<int> content) async {
-    const downloadDirPath = '/storage/emulated/0/Download'; // For Android
-    final filePath = '$downloadDirPath/${name}';
-    final file = File(filePath);
-    await file.writeAsBytes(content);
+    final externalDir = await getExternalStorageDirectory();
+    if (externalDir == null) {
+      throw StateError('External storage directory is not available');
+    }
+
+    final downloadDir = Directory('${externalDir.path}/Download');
+    if (!await downloadDir.exists()) {
+      await downloadDir.create(recursive: true);
+    }
+
+    final file = File('${downloadDir.path}/$name');
+    await file.writeAsBytes(content, flush: true);
   }
 }

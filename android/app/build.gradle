@@ -40,7 +40,8 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "tech.xcash.wallet.legacy"
-        minSdkVersion 21
+        // Legacy app build: support Android 10+ only.
+        minSdkVersion 29
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
