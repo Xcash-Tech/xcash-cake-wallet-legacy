@@ -466,6 +466,16 @@ extern "C"
         get_current_wallet()->startRefresh();
     }
 
+    void pause_refresh()
+    {
+        get_current_wallet()->pauseRefresh();
+    }
+
+    void resume_refresh()
+    {
+        get_current_wallet()->startRefresh();
+    }
+
     void set_refresh_from_block_height(uint64_t height)
     {
         __android_log_print(ANDROID_LOG_INFO, "MoneroAPI", "set_refresh_from_block_height: height=%llu", (unsigned long long)height);

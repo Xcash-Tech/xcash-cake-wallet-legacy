@@ -39,6 +39,10 @@ typedef setup_node = Int8 Function(
 
 typedef start_refresh = Void Function();
 
+typedef pause_refresh = Void Function();
+
+typedef resume_refresh = Void Function();
+
 typedef connect_to_node = Int8 Function();
 
 typedef set_refresh_from_block_height = Void Function(Int64);

@@ -12,6 +12,7 @@ import 'package:cake_wallet/monero/monero_wallet_service.dart';
 import 'package:cake_wallet/entities/contact.dart';
 import 'package:cake_wallet/entities/node.dart';
 import 'package:cake_wallet/exchange/trade.dart';
+import 'package:cake_wallet/entities/load_current_wallet.dart';
 import 'package:cake_wallet/reactions/on_authentication_state_change.dart';
 import 'package:cake_wallet/src/screens/backup/backup_page.dart';
 import 'package:cake_wallet/src/screens/backup/edit_backup_password_page.dart';
@@ -277,15 +278,18 @@ Future setup(
 
             authPageState.changeProcessText('Loading the wallet');
 
-            if (loginError != null) {
-              authPageState
-                  .changeProcessText('ERROR: ${loginError.toString()}');
-            }
-
             ReactionDisposer _reaction;
             _reaction = reaction((_) => appStore.wallet, (Object _) {
               _reaction?.reaction?.dispose();
               authStore.allowed();
+            });
+
+            Future<void>(() async {
+              try {
+                await loadCurrentWallet();
+              } catch (e) {
+                authPageState.changeProcessText('ERROR: ${e.toString()}');
+              }
             });
           }, closable: false),
       instanceName: 'login');

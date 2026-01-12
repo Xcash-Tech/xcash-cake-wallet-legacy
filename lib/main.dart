@@ -198,6 +198,7 @@ class App extends StatelessWidget {
 
       return Root(
           authenticationStore: authenticationStore,
+          appStore: getIt.get<AppStore>(),
           navigatorKey: navigatorKey,
           child: MaterialApp(
             navigatorKey: navigatorKey,

@@ -81,6 +81,7 @@ abstract class MoneroWalletBase extends WalletBase<MoneroBalance,
   bool _isTransactionUpdating;
   bool _hasSyncAfterStartup;
   Timer _autoSaveTimer;
+  bool _refreshPaused = false;
 
   Future<void> init() async {
     await walletAddresses.init();
@@ -114,6 +115,26 @@ abstract class MoneroWalletBase extends WalletBase<MoneroBalance,
     // the new wallet is opened before close() is called on the old one,
     // so closeCurrentWallet() would close the NEW wallet instead.
     // The native wallet is properly closed by openWallet() before opening a new one.
+  }
+
+  void pauseRefresh() {
+    if (_refreshPaused) {
+      return;
+    }
+
+    _refreshPaused = true;
+    _listener?.stop();
+    monero_wallet.pauseRefresh();
+  }
+
+  void resumeRefresh() {
+    if (!_refreshPaused) {
+      return;
+    }
+
+    _refreshPaused = false;
+    monero_wallet.resumeRefresh();
+    _listener?.start();
   }
 
   @override

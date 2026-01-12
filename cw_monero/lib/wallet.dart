@@ -50,6 +50,14 @@ final startRefreshNative = moneroApi
     .lookup<NativeFunction<start_refresh>>('start_refresh')
     .asFunction<StartRefresh>();
 
+final pauseRefreshNative = moneroApi
+    .lookup<NativeFunction<pause_refresh>>('pause_refresh')
+    .asFunction<PauseRefresh>();
+
+final resumeRefreshNative = moneroApi
+    .lookup<NativeFunction<resume_refresh>>('resume_refresh')
+    .asFunction<ResumeRefresh>();
+
 final connecToNodeNative = moneroApi
     .lookup<NativeFunction<connect_to_node>>('connect_to_node')
     .asFunction<ConnectToNode>();
@@ -271,7 +279,10 @@ class SyncListener {
     });
   }
 
-  void stop() => _updateSyncInfoTimer?.cancel();
+  void stop() {
+    _updateSyncInfoTimer?.cancel();
+    _updateSyncInfoTimer = null;
+  }
 }
 
 SyncListener setListeners(void Function(int, int, double) onNewBlock,
@@ -305,6 +316,10 @@ bool _isConnected(Object _) => isConnectedSync();
 int _getNodeHeight(Object _) => getNodeHeightSync();
 
 void startRefresh() => startRefreshSync();
+
+void pauseRefresh() => pauseRefreshNative();
+
+void resumeRefresh() => resumeRefreshNative();
 
 Future setupNode(
         {String address,

@@ -39,6 +39,10 @@ typedef SetupNode = int Function(
 
 typedef StartRefresh = void Function();
 
+typedef PauseRefresh = void Function();
+
+typedef ResumeRefresh = void Function();
+
 typedef ConnectToNode = int Function();
 
 typedef SetRefreshFromBlockHeight = void Function(int);

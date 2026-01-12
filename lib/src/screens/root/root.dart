@@ -4,6 +4,7 @@ import 'package:cake_wallet/src/screens/auth/auth_page.dart';
 import 'package:cake_wallet/store/app_store.dart';
 import 'package:cake_wallet/store/authentication_store.dart';
 import 'package:cake_wallet/entities/qr_scanner.dart';
+import 'package:cake_wallet/monero/monero_wallet.dart';
 
 class Root extends StatefulWidget {
   Root(
@@ -45,6 +46,10 @@ class RootState extends State<Root> with WidgetsBindingObserver {
 
         if (!_isInactive &&
             widget.authenticationStore.state == AuthenticationState.allowed) {
+          final wallet = widget.appStore?.wallet;
+          if (wallet is MoneroWallet) {
+            wallet.pauseRefresh();
+          }
           setState(() => _isInactive = true);
         }
 
@@ -65,6 +70,10 @@ class RootState extends State<Root> with WidgetsBindingObserver {
             return;
           }
 
+          final wallet = widget.appStore?.wallet;
+          if (wallet is MoneroWallet) {
+            wallet.resumeRefresh();
+          }
           _reset();
           auth.close();
         });
