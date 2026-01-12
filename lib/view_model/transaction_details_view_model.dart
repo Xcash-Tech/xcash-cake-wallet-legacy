@@ -171,7 +171,7 @@ abstract class TransactionDetailsViewModelBase with Store {
   String _explorerDescription(WalletType type) {
     switch (type) {
       case WalletType.monero:
-        return 'View Transaction on xplorer.xcash.tech';
+        return 'View Transaction on X-plorer';
       case WalletType.bitcoin:
         return 'View Transaction on Blockchain.com';
       case WalletType.litecoin:
