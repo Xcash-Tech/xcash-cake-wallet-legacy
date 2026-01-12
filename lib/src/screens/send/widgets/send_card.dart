@@ -131,6 +131,7 @@ class SendCardState extends State<SendCard>
                           .primaryTextTheme
                           .display1
                           .color,
+                      iconColor: Colors.white,
                       borderColor: Theme.of(context)
                           .primaryTextTheme
                           .headline
@@ -165,10 +166,11 @@ class SendCardState extends State<SendCard>
                                       TextInputType.numberWithOptions(
                                           signed: false, decimal: true),
                                       inputFormatters: [
-                                        FilteringTextInputFormatter.deny(RegExp('[\\-|\\ ]'))
+                                        FilteringTextInputFormatter.deny(RegExp('[\\-|\\ ]')),
+                                        FilteringTextInputFormatter.allow(RegExp(r'^\d*[,.]?\d{0,2}'))
                                       ],
                                       prefixIcon: Padding(
-                                        padding: EdgeInsets.only(top: 9),
+                                        padding: EdgeInsets.only(top: 9, right: 8),
                                         child: Text(
                                             sendViewModel.currency.title +
                                                 ':',
@@ -181,7 +183,7 @@ class SendCardState extends State<SendCard>
                                       suffixIcon: SizedBox(
                                         width: prefixIconWidth,
                                       ),
-                                      hintText: '0.0000',
+                                      hintText: '0.00',
                                       borderColor: Theme.of(context)
                                           .primaryTextTheme
                                           .headline
@@ -229,10 +231,7 @@ class SendCardState extends State<SendCard>
                                                             fontWeight:
                                                             FontWeight.bold,
                                                             color:
-                                                            Theme.of(context)
-                                                                .primaryTextTheme
-                                                                .display1
-                                                                .decorationColor))),
+                                                            Colors.white))),
                                               ))))])
                         )),
                     Observer(
@@ -268,46 +267,48 @@ class SendCardState extends State<SendCard>
                             ],
                           ),
                         )),
+                    // TODO: USD conversion not supported yet
+                    // Padding(
+                    //     padding: const EdgeInsets.only(top: 20),
+                    //     child: BaseTextFormField(
+                    //       focusNode: fiatAmountFocus,
+                    //       controller: fiatAmountController,
+                    //       keyboardType:
+                    //       TextInputType.numberWithOptions(
+                    //           signed: false, decimal: true),
+                    //       inputFormatters: [
+                    //         FilteringTextInputFormatter.deny(RegExp('[\\-|\\ ]')),
+                    //         FilteringTextInputFormatter.allow(RegExp(r'^\d*[,.]?\d{0,2}'))
+                    //       ],
+                    //       prefixIcon: Padding(
+                    //         padding: EdgeInsets.only(top: 9, right: 8),
+                    //         child:
+                    //         Text(sendViewModel.fiat.title + ':',
+                    //             style: TextStyle(
+                    //               fontSize: 16,
+                    //               fontWeight: FontWeight.w600,
+                    //               color: Colors.white,
+                    //             )),
+                    //       ),
+                    //       hintText: '0.00',
+                    //       borderColor: Theme.of(context)
+                    //           .primaryTextTheme
+                    //           .headline
+                    //           .color,
+                    //       textStyle: TextStyle(
+                    //           fontSize: 14,
+                    //           fontWeight: FontWeight.w500,
+                    //           color: Colors.white),
+                    //       placeholderTextStyle: TextStyle(
+                    //           color: Theme.of(context)
+                    //               .primaryTextTheme
+                    //               .headline
+                    //               .decorationColor,
+                    //           fontWeight: FontWeight.w500,
+                    //           fontSize: 14),
+                    //     )),
                     Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: BaseTextFormField(
-                          focusNode: fiatAmountFocus,
-                          controller: fiatAmountController,
-                          keyboardType:
-                          TextInputType.numberWithOptions(
-                              signed: false, decimal: true),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.deny(RegExp('[\\-|\\ ]'))
-                          ],
-                          prefixIcon: Padding(
-                            padding: EdgeInsets.only(top: 9),
-                            child:
-                            Text(sendViewModel.fiat.title + ':',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                )),
-                          ),
-                          hintText: '0.00',
-                          borderColor: Theme.of(context)
-                              .primaryTextTheme
-                              .headline
-                              .color,
-                          textStyle: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white),
-                          placeholderTextStyle: TextStyle(
-                              color: Theme.of(context)
-                                  .primaryTextTheme
-                                  .headline
-                                  .decorationColor,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14),
-                        )),
-                    Padding(
-                      padding: EdgeInsets.only(top: 20),
+                      padding: EdgeInsets.only(top: 40),
                       child: BaseTextFormField(
                         controller: noteController,
                         keyboardType: TextInputType.multiline,
