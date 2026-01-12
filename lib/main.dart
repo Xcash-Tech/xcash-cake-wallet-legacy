@@ -165,13 +165,24 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   Future<void> _initFuture;
+  static const Duration _minimumFlutterSplashDuration =
+      Duration(milliseconds: 1000);
 
   @override
   void initState() {
     super.initState();
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-    _initFuture = _initializeApp();
+    _initFuture = () async {
+      final stopwatch = Stopwatch()..start();
+      await _initializeApp();
+      stopwatch.stop();
+
+      final remaining = _minimumFlutterSplashDuration - stopwatch.elapsed;
+      if (remaining.inMilliseconds > 0) {
+        await Future.delayed(remaining);
+      }
+    }();
   }
 
   @override
