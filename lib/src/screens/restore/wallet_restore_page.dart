@@ -18,14 +18,59 @@ import 'package:cake_wallet/utils/show_pop_up.dart';
 import 'package:cake_wallet/utils/mnemonic_sanitizer.dart';
 
 class WalletRestorePage extends BasePage {
-  WalletRestorePage(this.walletRestoreViewModel)
-      : walletRestoreFromSeedFormKey =
-            GlobalKey<WalletRestoreFromSeedFormState>(),
-        walletRestoreFromKeysFormKey =
-            GlobalKey<WalletRestoreFromKeysFromState>(),
-        _pages = [],
-        _blockHeightFocusNode = FocusNode(),
-        _controller = PageController(initialPage: 0) {
+  WalletRestorePage(this.walletRestoreViewModel);
+
+  @override
+  Widget middle(BuildContext context) => Observer(
+      builder: (_) => Text(
+            walletRestoreViewModel.mode == WalletRestoreMode.seed
+                ? S.current.restore_title_from_seed
+                : S.current.restore_title_from_keys,
+            style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Lato',
+                color: titleColor ??
+                    Theme.of(context).primaryTextTheme.title.color),
+          ));
+
+  final WalletRestoreViewModel walletRestoreViewModel;
+
+  @override
+  Widget body(BuildContext context) =>
+      _WalletRestorePageBody(walletRestoreViewModel: walletRestoreViewModel);
+}
+
+class _WalletRestorePageBody extends StatefulWidget {
+  const _WalletRestorePageBody({Key key, @required this.walletRestoreViewModel})
+      : super(key: key);
+
+  final WalletRestoreViewModel walletRestoreViewModel;
+
+  @override
+  State<_WalletRestorePageBody> createState() => _WalletRestorePageBodyState();
+}
+
+class _WalletRestorePageBodyState extends State<_WalletRestorePageBody> {
+  final GlobalKey<WalletRestoreFromSeedFormState> walletRestoreFromSeedFormKey =
+      GlobalKey<WalletRestoreFromSeedFormState>();
+  final GlobalKey<WalletRestoreFromKeysFromState> walletRestoreFromKeysFormKey =
+      GlobalKey<WalletRestoreFromKeysFromState>();
+
+  final FocusNode _blockHeightFocusNode = FocusNode();
+  final PageController _controller = PageController(initialPage: 0);
+  final List<Widget> _pages = [];
+
+  ReactionDisposer _stateReaction;
+  ReactionDisposer _modeReaction;
+
+  WalletRestoreViewModel get walletRestoreViewModel =>
+      widget.walletRestoreViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+
     void updateRestoreButtonEnabled() {
       if (walletRestoreViewModel.mode != WalletRestoreMode.seed) {
         return;
@@ -82,32 +127,9 @@ class WalletRestorePage extends BasePage {
           break;
       }
     });
-  }
 
-  @override
-  Widget middle(BuildContext context) => Observer(
-      builder: (_) => Text(
-            walletRestoreViewModel.mode == WalletRestoreMode.seed
-                ? S.current.restore_title_from_seed
-                : S.current.restore_title_from_keys,
-            style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Lato',
-                color: titleColor ??
-                    Theme.of(context).primaryTextTheme.title.color),
-          ));
-
-  final WalletRestoreViewModel walletRestoreViewModel;
-  final PageController _controller;
-  final List<Widget> _pages;
-  final GlobalKey<WalletRestoreFromSeedFormState> walletRestoreFromSeedFormKey;
-  final GlobalKey<WalletRestoreFromKeysFromState> walletRestoreFromKeysFormKey;
-  final FocusNode _blockHeightFocusNode;
-
-  @override
-  Widget body(BuildContext context) {
-    reaction((_) => walletRestoreViewModel.state, (ExecutionState state) {
+    _stateReaction = reaction((_) => walletRestoreViewModel.state,
+        (ExecutionState state) {
       if (state is FailureState) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           showPopUp<void>(
@@ -123,12 +145,13 @@ class WalletRestorePage extends BasePage {
       }
     });
 
-    reaction((_) => walletRestoreViewModel.mode, (WalletRestoreMode mode) {
+    _modeReaction =
+        reaction((_) => walletRestoreViewModel.mode, (WalletRestoreMode mode) {
       walletRestoreViewModel.isButtonEnabled = false;
 
       if (walletRestoreViewModel.hasBlockchainHeightLanguageSelector) {
-        final seedHeightState =
-            walletRestoreFromSeedFormKey.currentState?.blockchainHeightKey?.currentState;
+        final seedHeightState = walletRestoreFromSeedFormKey
+            .currentState?.blockchainHeightKey?.currentState;
         if (seedHeightState != null) {
           seedHeightState.dateController.text = '';
           seedHeightState.restoreHeightController.text =
@@ -136,14 +159,51 @@ class WalletRestorePage extends BasePage {
         }
       }
 
-      final keysHeightState =
-          walletRestoreFromKeysFormKey.currentState?.blockchainHeightKey?.currentState;
+      final keysHeightState = walletRestoreFromKeysFormKey
+          .currentState?.blockchainHeightKey?.currentState;
       if (keysHeightState != null) {
         keysHeightState.restoreHeightController.text = '';
         keysHeightState.dateController.text = '';
       }
     });
+  }
 
+  @override
+  void dispose() {
+    _stateReaction?.reaction?.dispose();
+    _modeReaction?.reaction?.dispose();
+    _blockHeightFocusNode.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Map<String, dynamic> _credentials() {
+    final credentials = <String, dynamic>{};
+
+    if (walletRestoreViewModel.mode == WalletRestoreMode.seed) {
+      credentials['seed'] = sanitizeMnemonic(walletRestoreFromSeedFormKey
+          .currentState.seedWidgetStateKey.currentState.text);
+
+      if (walletRestoreViewModel.hasBlockchainHeightLanguageSelector) {
+        credentials['height'] = walletRestoreFromSeedFormKey
+            .currentState.blockchainHeightKey.currentState.height;
+      }
+    } else {
+      credentials['address'] =
+          walletRestoreFromKeysFormKey.currentState.addressController.text;
+      credentials['viewKey'] =
+          walletRestoreFromKeysFormKey.currentState.viewKeyController.text;
+      credentials['spendKey'] =
+          walletRestoreFromKeysFormKey.currentState.spendKeyController.text;
+      credentials['height'] = walletRestoreFromKeysFormKey
+          .currentState.blockchainHeightKey.currentState.height;
+    }
+
+    return credentials;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       Expanded(
           child: PageView.builder(
@@ -187,30 +247,5 @@ class WalletRestorePage extends BasePage {
             },
           ))
     ]);
-  }
-
-  Map<String, dynamic> _credentials() {
-    final credentials = <String, dynamic>{};
-
-    if (walletRestoreViewModel.mode == WalletRestoreMode.seed) {
-      credentials['seed'] = sanitizeMnemonic(walletRestoreFromSeedFormKey
-          .currentState.seedWidgetStateKey.currentState.text);
-
-      if (walletRestoreViewModel.hasBlockchainHeightLanguageSelector) {
-        credentials['height'] = walletRestoreFromSeedFormKey
-            .currentState.blockchainHeightKey.currentState.height;
-      }
-    } else {
-      credentials['address'] =
-          walletRestoreFromKeysFormKey.currentState.addressController.text;
-      credentials['viewKey'] =
-          walletRestoreFromKeysFormKey.currentState.viewKeyController.text;
-      credentials['spendKey'] =
-          walletRestoreFromKeysFormKey.currentState.spendKeyController.text;
-      credentials['height'] = walletRestoreFromKeysFormKey
-          .currentState.blockchainHeightKey.currentState.height;
-    }
-
-    return credentials;
   }
 }
