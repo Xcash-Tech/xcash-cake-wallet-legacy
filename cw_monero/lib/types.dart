@@ -88,6 +88,8 @@ typedef TransactionsCount = int Function();
 
 typedef TransactionsGetAll = Pointer<Int64> Function();
 
+typedef TransactionsGetRange = Pointer<Int64> Function(int start, int count);
+
 typedef TransactionCreate = int Function(
     Pointer<Utf8> address,
     Pointer<Utf8> paymentId,

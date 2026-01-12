@@ -97,19 +97,28 @@ class MoneroWalletService extends WalletService<
   @override
   Future<MoneroWallet> openWallet(String name, String password) async {
     try {
+      final stopwatch = Stopwatch()..start();
+      print('[OPEN_WALLET] Starting openWallet for $name...');
+      
       final path = await pathForWallet(name: name, type: getType());
+      print('[OPEN_WALLET] Got path (${stopwatch.elapsedMilliseconds}ms)');
 
       if (walletFilesExist(path)) {
         await repairOldAndroidWallet(name);
+        print('[OPEN_WALLET] Repair check done (${stopwatch.elapsedMilliseconds}ms)');
       }
 
+      print('[OPEN_WALLET] Calling openWalletAsync...');
       await monero_wallet_manager
           .openWalletAsync({'path': path, 'password': password});
+      print('[OPEN_WALLET] openWalletAsync done (${stopwatch.elapsedMilliseconds}ms)');
+      
       final walletInfo = walletInfoSource.values.firstWhere(
           (info) => info.id == WalletBase.idFor(name, getType()),
           orElse: () => null);
       final wallet = MoneroWallet(walletInfo: walletInfo);
       final isValid = wallet.walletAddresses.validate();
+      print('[OPEN_WALLET] Wallet created, valid=$isValid (${stopwatch.elapsedMilliseconds}ms)');
 
       if (!isValid) {
         await restoreOrResetWalletFiles(name);
@@ -117,7 +126,9 @@ class MoneroWalletService extends WalletService<
         return openWallet(name, password);
       }
 
+      print('[OPEN_WALLET] Calling wallet.init()...');
       await wallet.init();
+      print('[OPEN_WALLET] wallet.init() done (${stopwatch.elapsedMilliseconds}ms)');
 
       return wallet;
     } catch (e) {

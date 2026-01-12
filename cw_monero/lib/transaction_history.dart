@@ -23,6 +23,10 @@ final transactionsGetAllNative = moneroApi
     .lookup<NativeFunction<transactions_get_all>>('transactions_get_all')
     .asFunction<TransactionsGetAll>();
 
+final transactionsGetRangeNative = moneroApi
+    .lookup<NativeFunction<transactions_get_range>>('transactions_get_range')
+    .asFunction<TransactionsGetRange>();
+
 final transactionCreateNative = moneroApi
     .lookup<NativeFunction<transaction_create>>('transaction_create')
     .asFunction<TransactionCreate>();
@@ -64,6 +68,20 @@ List<TransactionInfoRow> getAllTransations() {
   return transactionsAddresses
       .map((addr) => Pointer<TransactionInfoRow>.fromAddress(addr).ref)
       .toList();
+}
+
+List<TransactionInfoRow> getTransactionsRange(int start, int count) {
+  final transactionsPointer = transactionsGetRangeNative(start, count);
+  
+  // Read only valid pointers - stop at first zero
+  final result = <TransactionInfoRow>[];
+  for (int i = 0; i < count; i++) {
+    final addr = transactionsPointer[i];
+    if (addr == 0) break; // End of valid data
+    result.add(Pointer<TransactionInfoRow>.fromAddress(addr).ref);
+  }
+  
+  return result;
 }
 
 PendingTransactionDescription createTransactionSync(

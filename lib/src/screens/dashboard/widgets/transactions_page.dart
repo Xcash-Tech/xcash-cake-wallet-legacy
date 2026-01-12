@@ -12,10 +12,56 @@ import 'package:intl/intl.dart';
 import 'package:cake_wallet/routes.dart';
 import 'package:cake_wallet/generated/i18n.dart';
 
-class TransactionsPage extends StatelessWidget {
+class TransactionsPage extends StatefulWidget {
   TransactionsPage({@required this.dashboardViewModel});
 
   final DashboardViewModel dashboardViewModel;
+
+  @override
+  _TransactionsPageState createState() => _TransactionsPageState();
+}
+
+class _TransactionsPageState extends State<TransactionsPage> {
+  ScrollController _scrollController;
+  bool _isLoadingMore = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    // Load more when near the bottom (80% scrolled)
+    if (_scrollController.position.pixels >= 
+        _scrollController.position.maxScrollExtent * 0.8) {
+      _loadMore();
+    }
+  }
+
+  Future<void> _loadMore() async {
+    if (_isLoadingMore || !widget.dashboardViewModel.hasMoreTransactions) {
+      return;
+    }
+    
+    setState(() => _isLoadingMore = true);
+    
+    try {
+      await widget.dashboardViewModel.loadMoreTransactions();
+    } finally {
+      if (mounted) {
+        setState(() => _isLoadingMore = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,16 +72,36 @@ class TransactionsPage extends StatelessWidget {
       ),
       child: Column(
         children: <Widget>[
-          HeaderRow(dashboardViewModel: dashboardViewModel),
+          HeaderRow(dashboardViewModel: widget.dashboardViewModel),
           Expanded(
             child: Observer(
                 builder: (_) {
-                  final items = dashboardViewModel.items;
+                  final items = widget.dashboardViewModel.items;
+                  final hasMore = widget.dashboardViewModel.hasMoreTransactions;
+                  // Add 1 for loading indicator if there are more to load
+                  final itemCount = (items?.length ?? 0) + (hasMore ? 1 : 0);
 
                   return items?.isNotEmpty ?? false
                     ? ListView.builder(
-                      itemCount: items.length,
+                      controller: _scrollController,
+                      itemCount: itemCount,
                       itemBuilder: (context, index) {
+                        // Show loading indicator at the end
+                        if (index >= items.length) {
+                          return Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Center(
+                              child: _isLoadingMore
+                                ? CircularProgressIndicator()
+                                : Text(
+                                    'Scroll to load more...',
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryTextTheme.caption.color,
+                                    ),
+                                  ),
+                            ),
+                          );
+                        }
 
                         final item = items[index];
 
@@ -52,7 +118,7 @@ class TransactionsPage extends StatelessWidget {
                                   Routes.transactionDetails,
                                   arguments: transaction),
                               direction: transaction.direction,
-                              formattedDate: DateFormat('HH:mm')
+                              formattedDate: DateFormat('dd.MM.yy HH:mm:ss')
                                   .format(transaction.date),
                               formattedAmount: item.formattedCryptoAmount,
                               formattedFiatAmount: item.formattedFiatAmount,

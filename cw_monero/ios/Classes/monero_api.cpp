@@ -769,6 +769,26 @@ extern "C"
         return m_transaction_history->count();
     }
 
+    int64_t *transactions_get_range(int32_t start, int32_t count)
+    {
+        std::vector<XCash::TransactionInfo *> transactions = m_transaction_history->getRange(start, count);
+        size_t size = transactions.size();
+        // Allocate one extra slot for terminating zero
+        int64_t *transactionAddresses = (int64_t *)malloc((size + 1) * sizeof(int64_t));
+
+        for (size_t i = 0; i < size; i++)
+        {
+            XCash::TransactionInfo *row = transactions[i];
+            TransactionInfoRow *tx = new TransactionInfoRow(row);
+            transactionAddresses[i] = reinterpret_cast<int64_t>(tx);
+        }
+        
+        // Add terminating zero to indicate end of data
+        transactionAddresses[size] = 0;
+
+        return transactionAddresses;
+    }
+
     int LedgerExchange(
         unsigned char *command,
         unsigned int cmd_len,

@@ -280,4 +280,21 @@ abstract class DashboardViewModelBase with Store {
             balanceViewModel: balanceViewModel,
             settingsStore: appStore.settingsStore)));
   }
+
+  /// Check if there are more transactions to load (for lazy loading)
+  bool get hasMoreTransactions {
+    final w = wallet;
+    if (w is MoneroWallet) {
+      return w.hasMoreTransactions;
+    }
+    return false;
+  }
+
+  /// Load more older transactions when user scrolls down
+  Future<void> loadMoreTransactions() async {
+    final w = wallet;
+    if (w is MoneroWallet) {
+      await w.loadMoreTransactions();
+    }
+  }
 }

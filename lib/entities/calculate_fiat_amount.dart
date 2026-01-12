@@ -3,7 +3,9 @@ String calculateFiatAmount({double price, String cryptoAmount}) {
     return '0.00';
   }
 
-  final _amount = double.parse(cryptoAmount);
+  // Remove commas from formatted numbers before parsing
+  final cleanAmount = cryptoAmount.replaceAll(',', '');
+  final _amount = double.tryParse(cleanAmount) ?? 0.0;
   final _result = price * _amount;
   final result = _result < 0 ? _result * -1 : _result;
 

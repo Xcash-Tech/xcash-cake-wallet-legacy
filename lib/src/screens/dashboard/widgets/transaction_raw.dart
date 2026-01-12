@@ -77,11 +77,12 @@ class TransactionRow extends StatelessWidget {
                           children: <Widget>[
                             Text(formattedDate,
                                 style: TextStyle(
-                                    fontSize: 14,
+                                    fontSize: 11,
                                     color: Theme.of(context)
-                                        .textTheme
-                                        .overline
-                                        .backgroundColor)),
+                                        .accentTextTheme
+                                        .display3
+                                        .backgroundColor
+                                        ?.withOpacity(0.6))),
                             Text(formattedFiatAmount,
                                 style: TextStyle(
                                     fontSize: 14,
