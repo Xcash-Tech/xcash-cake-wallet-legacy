@@ -29,6 +29,7 @@ import 'package:cake_wallet/entities/template.dart';
 import 'package:cake_wallet/exchange/trade.dart';
 import 'package:cake_wallet/exchange/exchange_template.dart';
 import 'package:cake_wallet/src/screens/root/root.dart';
+import 'package:cake_wallet/src/screens/splash/app_splash_overlay.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -200,20 +201,22 @@ class App extends StatelessWidget {
           authenticationStore: authenticationStore,
           appStore: getIt.get<AppStore>(),
           navigatorKey: navigatorKey,
-          child: MaterialApp(
-            navigatorKey: navigatorKey,
-            debugShowCheckedModeBanner: false,
-            theme: settingsStore.theme,
-            localizationsDelegates: [
-              S.delegate,
-              GlobalCupertinoLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-            ],
-            supportedLocales: S.delegate.supportedLocales,
-            locale: Locale(settingsStore.languageCode),
-            onGenerateRoute: (settings) => Router.createRoute(settings),
-            initialRoute: initialRoute,
+          child: AppSplashOverlay(
+            child: MaterialApp(
+              navigatorKey: navigatorKey,
+              debugShowCheckedModeBanner: false,
+              theme: settingsStore.theme,
+              localizationsDelegates: [
+                S.delegate,
+                GlobalCupertinoLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
+              locale: Locale(settingsStore.languageCode),
+              onGenerateRoute: (settings) => Router.createRoute(settings),
+              initialRoute: initialRoute,
+            ),
           ));
     });
   }
