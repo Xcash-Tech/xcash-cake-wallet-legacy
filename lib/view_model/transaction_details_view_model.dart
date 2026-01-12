@@ -158,7 +158,7 @@ abstract class TransactionDetailsViewModelBase with Store {
   String _explorerUrl(WalletType type, String txId) {
     switch (type) {
       case WalletType.monero:
-        return 'https://xmrchain.net/search?value=${txId}';
+        return 'https://xplorer.xcash.tech/tx/${txId}';
       case WalletType.bitcoin:
         return 'https://www.blockchain.com/btc/tx/${txId}';
       case WalletType.litecoin:
@@ -171,7 +171,7 @@ abstract class TransactionDetailsViewModelBase with Store {
   String _explorerDescription(WalletType type) {
     switch (type) {
       case WalletType.monero:
-        return 'View Transaction on XMRChain.net';
+        return 'View Transaction on xplorer.xcash.tech';
       case WalletType.bitcoin:
         return 'View Transaction on Blockchain.com';
       case WalletType.litecoin:
