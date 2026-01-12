@@ -1,4 +1,3 @@
-import 'package:cake_wallet/bitcoin/bitcoin_wallet.dart';
 import 'package:cake_wallet/core/transaction_history.dart';
 import 'package:cake_wallet/core/wallet_base.dart';
 import 'package:cake_wallet/entities/balance.dart';
@@ -6,7 +5,6 @@ import 'package:cake_wallet/entities/crypto_currency.dart';
 import 'package:cake_wallet/entities/transaction_info.dart';
 import 'package:cake_wallet/entities/wallet_type.dart';
 import 'package:cake_wallet/generated/i18n.dart';
-import 'package:cake_wallet/monero/monero_wallet.dart';
 import 'package:cake_wallet/entities/balance_display_mode.dart';
 import 'package:cake_wallet/entities/calculate_fiat_amount.dart';
 import 'package:cake_wallet/store/app_store.dart';
@@ -28,16 +26,13 @@ abstract class BalanceViewModelBase with Store {
     wallet ??= appStore.wallet;
     final _wallet = wallet;
 
-    if (_wallet is MoneroWallet) {
-      balance = _wallet.balance;
-    }
-
-    if (_wallet is BitcoinWallet) {
-      balance = _wallet.balance;
-    }
-
     reaction((_) => appStore.wallet, _onWalletChange);
 
+    if (_wallet == null) {
+      return;
+    }
+
+    balance = _wallet.balance;
     _onCurrentWalletChangeReaction =
         reaction<void>((_) => wallet.balance, (dynamic balance) {
       if (balance is Balance) {
@@ -63,7 +58,8 @@ abstract class BalanceViewModelBase with Store {
       wallet;
 
   @computed
-  double get price => fiatConvertationStore.prices[appStore.wallet.currency];
+  double get price =>
+      fiatConvertationStore.prices[appStore.wallet?.currency] ?? 0.0;
 
   @computed
   BalanceDisplayMode get savedDisplayMode => settingsStore.balanceDisplayMode;
@@ -77,7 +73,7 @@ abstract class BalanceViewModelBase with Store {
 
   @computed
   String get availableBalanceLabel {
-    if (wallet.type == WalletType.monero) {
+    if (wallet?.type == WalletType.monero) {
       return S.current.xmr_available_balance;
     }
 
@@ -86,7 +82,7 @@ abstract class BalanceViewModelBase with Store {
 
   @computed
   String get additionalBalanceLabel {
-    if (wallet.type == WalletType.monero) {
+    if (wallet?.type == WalletType.monero) {
       return S.current.xmr_full_balance;
     }
 
@@ -97,7 +93,7 @@ abstract class BalanceViewModelBase with Store {
   String get availableBalance {
     final walletBalance = _walletBalance;
 
-    if (displayMode == BalanceDisplayMode.hiddenBalance) {
+    if (walletBalance == null || displayMode == BalanceDisplayMode.hiddenBalance) {
       return '---';
     }
 
@@ -108,7 +104,7 @@ abstract class BalanceViewModelBase with Store {
   String get additionalBalance {
     final walletBalance = _walletBalance;
 
-    if (displayMode == BalanceDisplayMode.hiddenBalance) {
+    if (walletBalance == null || displayMode == BalanceDisplayMode.hiddenBalance) {
       return '---';
     }
 
@@ -120,7 +116,7 @@ abstract class BalanceViewModelBase with Store {
     final walletBalance = _walletBalance;
     final fiatCurrency = settingsStore.fiatCurrency;
 
-    if (displayMode == BalanceDisplayMode.hiddenBalance) {
+    if (walletBalance == null || displayMode == BalanceDisplayMode.hiddenBalance) {
       return '---';
     }
 
@@ -136,7 +132,7 @@ abstract class BalanceViewModelBase with Store {
     final walletBalance = _walletBalance;
     final fiatCurrency = settingsStore.fiatCurrency;
 
-    if (displayMode == BalanceDisplayMode.hiddenBalance) {
+    if (walletBalance == null || displayMode == BalanceDisplayMode.hiddenBalance) {
       return '---';
     }
 
@@ -148,10 +144,10 @@ abstract class BalanceViewModelBase with Store {
   }
 
   @computed
-  Balance get _walletBalance => wallet.balance;
+  Balance get _walletBalance => wallet?.balance;
 
   @computed
-  CryptoCurrency get currency => appStore.wallet.currency;
+  CryptoCurrency get currency => appStore.wallet?.currency;
 
   ReactionDisposer _onCurrentWalletChangeReaction;
 
@@ -160,6 +156,14 @@ abstract class BalanceViewModelBase with Store {
       WalletBase<Balance, TransactionHistoryBase<TransactionInfo>,
               TransactionInfo>
           wallet) {
+    if (wallet == null) {
+      this.wallet = null;
+      balance = null;
+      _onCurrentWalletChangeReaction?.reaction?.dispose();
+      _onCurrentWalletChangeReaction = null;
+      return;
+    }
+
     this.wallet = wallet;
     balance = wallet.balance;
     _onCurrentWalletChangeReaction?.reaction?.dispose();

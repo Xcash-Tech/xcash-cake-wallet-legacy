@@ -60,56 +60,10 @@ abstract class DashboardViewModelBase with Store {
 
     name = appStore.wallet?.name;
     wallet ??= appStore.wallet;
-    type = wallet.type;
-    isOutdatedElectrumWallet =
-        wallet.type == WalletType.bitcoin && wallet.seed.split(' ').length < 24;
-    final _wallet = wallet;
-
-    if (_wallet is MoneroWallet) {
-      subname = _wallet.walletAddresses.account?.label;
-
-      _onMoneroAccountChangeReaction = reaction((_) => _wallet.walletAddresses
-          .account, (Account account) => _onMoneroAccountChange(_wallet));
-
-      _onMoneroBalanceChangeReaction = reaction((_) => _wallet.balance,
-          (MoneroBalance balance) => _onMoneroTransactionsUpdate(_wallet));
-
-      final _accountTransactions = _wallet
-          .transactionHistory.transactions.values
-          .where((tx) => tx.accountIndex == _wallet.walletAddresses.account.id)
-          .toList();
-
-      transactions = ObservableList.of(_accountTransactions.map((transaction) =>
-          TransactionListItem(
-              transaction: transaction,
-              balanceViewModel: balanceViewModel,
-              settingsStore: appStore.settingsStore)));
-    } else {
-      transactions = ObservableList.of(wallet
-          .transactionHistory.transactions.values
-          .map((transaction) => TransactionListItem(
-              transaction: transaction,
-              balanceViewModel: balanceViewModel,
-              settingsStore: appStore.settingsStore)));
-    }
+    transactions = ObservableList.of([]);
+    _applyWallet(wallet);
 
     reaction((_) => appStore.wallet, _onWalletChange);
-
-    connectMapToListWithTransform(
-        appStore.wallet.transactionHistory.transactions,
-        transactions,
-        (TransactionInfo val) => TransactionListItem(
-            transaction: val,
-            balanceViewModel: balanceViewModel,
-            settingsStore: appStore.settingsStore),
-        filter: (TransactionInfo tx) {
-      final wallet = _wallet;
-      if (tx is MoneroTransactionInfo && wallet is MoneroWallet) {
-        return tx.accountIndex == wallet.walletAddresses.account.id;
-      }
-
-      return true;
-    });
   }
 
   @observable
@@ -125,10 +79,10 @@ abstract class DashboardViewModelBase with Store {
   String subname;
 
   @computed
-  String get address => wallet.walletAddresses.address;
+  String get address => wallet?.walletAddresses?.address ?? '';
 
   @computed
-  SyncStatus get status => wallet.syncStatus;
+  SyncStatus get status => wallet?.syncStatus ?? const NotConnectedSyncStatus();
 
   @computed
   String get syncStatusText {
@@ -176,7 +130,7 @@ abstract class DashboardViewModelBase with Store {
   WalletBase<Balance, TransactionHistoryBase<TransactionInfo>, TransactionInfo>
       wallet;
 
-  bool get hasRescan => wallet.type == WalletType.monero;
+  bool get hasRescan => wallet?.type == WalletType.monero;
 
   BalanceViewModel balanceViewModel;
 
@@ -213,17 +167,34 @@ abstract class DashboardViewModelBase with Store {
       WalletBase<Balance, TransactionHistoryBase<TransactionInfo>,
               TransactionInfo>
           wallet) {
+    _applyWallet(wallet);
+  }
+
+  void _applyWallet(
+      WalletBase<Balance, TransactionHistoryBase<TransactionInfo>,
+              TransactionInfo>
+          wallet) {
+    if (wallet == null) {
+      this.wallet = null;
+      type = null;
+      name = null;
+      subname = null;
+      isOutdatedElectrumWallet = false;
+      transactions?.clear();
+      return;
+    }
+
     this.wallet = wallet;
     type = wallet.type;
     name = wallet.name;
     isOutdatedElectrumWallet =
         wallet.type == WalletType.bitcoin && wallet.seed.split(' ').length < 24;
 
+    _onMoneroAccountChangeReaction?.reaction?.dispose();
+    _onMoneroBalanceChangeReaction?.reaction?.dispose();
+
     if (wallet is MoneroWallet) {
       subname = wallet.walletAddresses.account?.label;
-
-      _onMoneroAccountChangeReaction?.reaction?.dispose();
-      _onMoneroBalanceChangeReaction?.reaction?.dispose();
 
       _onMoneroAccountChangeReaction = reaction((_) => wallet.walletAddresses
           .account, (Account account) => _onMoneroAccountChange(wallet));
@@ -245,7 +216,7 @@ abstract class DashboardViewModelBase with Store {
     }
 
     connectMapToListWithTransform(
-        appStore.wallet.transactionHistory.transactions,
+        wallet.transactionHistory.transactions,
         transactions,
         (TransactionInfo val) => TransactionListItem(
             transaction: val,
