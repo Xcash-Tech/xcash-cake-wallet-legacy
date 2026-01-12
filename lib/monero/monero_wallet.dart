@@ -255,20 +255,23 @@ abstract class MoneroWalletBase extends WalletBase<MoneroBalance,
 
   @override
   int calculateEstimatedFee(TransactionPriority priority, int amount) {
-    // FIXME: hardcoded value;
+    // Estimated fees for X-Cash based on:
+    // - Base fee: 82 atomic units/byte (from seed2.xcash.tech:18281)
+    // - Typical tx size: ~2500 bytes
+    // - Priority multipliers: slow=1x, regular=4x, medium=20x, fast=166x, fastest=1000x
 
     if (priority is MoneroTransactionPriority) {
       switch (priority) {
         case MoneroTransactionPriority.slow:
-          return 24590000;
+          return 205000;      // ~0.205 XCASH
         case MoneroTransactionPriority.regular:
-          return 123050000;
+          return 820000;      // ~0.82 XCASH
         case MoneroTransactionPriority.medium:
-          return 245029999;
+          return 4100000;     // ~4.1 XCASH
         case MoneroTransactionPriority.fast:
-          return 614530000;
+          return 34030000;    // ~34 XCASH
         case MoneroTransactionPriority.fastest:
-          return 26021600000;
+          return 205000000;   // ~205 XCASH
       }
     }
 
