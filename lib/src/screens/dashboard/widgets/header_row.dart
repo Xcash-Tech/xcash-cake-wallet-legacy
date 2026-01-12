@@ -13,6 +13,10 @@ class HeaderRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final filterIcon = Image.asset('assets/images/filter_icon.png',
         color: Theme.of(context).textTheme.caption.decorationColor);
+    final filterButtonBackground =
+        (Theme.of(context).textTheme.overline.backgroundColor ??
+                Theme.of(context).cardColor)
+            .withOpacity(0.35);
 
     return Container(
       height: 52,
@@ -43,7 +47,7 @@ class HeaderRow extends StatelessWidget {
               width: 36,
               decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Theme.of(context).textTheme.overline.color
+                  color: filterButtonBackground
               ),
               child: filterIcon,
             ),

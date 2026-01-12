@@ -20,6 +20,11 @@ class TransactionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final chipBackground =
+        (Theme.of(context).textTheme.overline.backgroundColor ??
+                Theme.of(context).cardColor)
+            .withOpacity(0.35);
+
     return InkWell(
         onTap: onTap,
         child: Container(
@@ -34,7 +39,7 @@ class TransactionRow extends StatelessWidget {
                 width: 36,
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Theme.of(context).textTheme.overline.decorationColor
+                    color: chipBackground
                 ),
                 child: Image.asset(
                     direction == TransactionDirection.incoming
