@@ -201,22 +201,21 @@ class App extends StatelessWidget {
           authenticationStore: authenticationStore,
           appStore: getIt.get<AppStore>(),
           navigatorKey: navigatorKey,
-          child: MaterialApp(
-            navigatorKey: navigatorKey,
-            debugShowCheckedModeBanner: false,
-            theme: settingsStore.theme,
-            localizationsDelegates: [
-              S.delegate,
-              GlobalCupertinoLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-            ],
-            supportedLocales: S.delegate.supportedLocales,
-            locale: Locale(settingsStore.languageCode),
-            onGenerateRoute: (settings) => Router.createRoute(settings),
-            initialRoute: initialRoute,
-            builder: (context, child) => AppSplashOverlay(
-              child: child ?? const SizedBox.shrink(),
+          child: AppSplashOverlay(
+            child: MaterialApp(
+              navigatorKey: navigatorKey,
+              debugShowCheckedModeBanner: false,
+              theme: settingsStore.theme,
+              localizationsDelegates: [
+                S.delegate,
+                GlobalCupertinoLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
+              locale: Locale(settingsStore.languageCode),
+              onGenerateRoute: (settings) => Router.createRoute(settings),
+              initialRoute: initialRoute,
             ),
           ));
     });

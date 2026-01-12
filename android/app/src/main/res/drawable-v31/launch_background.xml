@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Android 12+ shows the system splash icon; keep Flutter's launch background logo-free to avoid a duplicate splash. -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/xcash_background" />
-</layer-list>

@@ -7,7 +7,7 @@ class AppSplashOverlay extends StatefulWidget {
   const AppSplashOverlay({
     Key key,
     @required this.child,
-    this.minimumVisible = const Duration(milliseconds: 800),
+    this.minimumVisible = const Duration(milliseconds: 600),
     this.fadeDuration = const Duration(milliseconds: 220),
   }) : super(key: key);
 
@@ -51,73 +51,77 @@ class _AppSplashOverlayState extends State<AppSplashOverlay>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      alignment: Alignment.center,
-      children: [
-        widget.child,
-        IgnorePointer(
-          ignoring: false,
-          child: AnimatedBuilder(
-            animation: _controller,
-            builder: (_, __) {
-              if (_controller.value <= 0.0) {
-                return const SizedBox.shrink();
-              }
+    // This widget wraps MaterialApp, so it must provide Directionality for the
+    // root Stack (Stack defaults to AlignmentDirectional.topStart).
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          widget.child,
+          IgnorePointer(
+            ignoring: false,
+            child: AnimatedBuilder(
+              animation: _controller,
+              builder: (_, __) {
+                if (_controller.value <= 0.0) {
+                  return const SizedBox.shrink();
+                }
 
-              final opacity = _controller.value;
-              final scale = 0.98 + (0.02 * opacity);
+                final opacity = _controller.value;
+                final scale = 0.98 + (0.02 * opacity);
 
-              return Opacity(
-                opacity: opacity,
-                child: ColoredBox(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  child: Center(
-                    child: Transform.scale(
-                      scale: scale,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image.asset(
-                            'assets/images/app_logo.png',
-                            width: 120,
-                            height: 120,
-                          ),
-                          const SizedBox(height: 14),
-                          RichText(
-                            text: TextSpan(
-                              style: const TextStyle(
-                                fontFamily: 'Lato',
-                                fontSize: 26,
-                                fontWeight: FontWeight.w700,
-                                height: 1.0,
-                              ),
-                              children: const [
-                                TextSpan(
-                                  text: 'X',
-                                  style: TextStyle(
-                                    color: PaletteExplorerDark.primary,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: '-wallet',
-                                  style: TextStyle(
-                                    color: PaletteExplorerDark.foreground,
-                                  ),
-                                ),
-                              ],
+                return Opacity(
+                  opacity: opacity,
+                  child: ColoredBox(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    child: Center(
+                      child: Transform.scale(
+                        scale: scale,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.asset(
+                              'assets/images/app_logo.png',
+                              width: 120,
+                              height: 120,
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 14),
+                            RichText(
+                              text: TextSpan(
+                                style: const TextStyle(
+                                  fontFamily: 'Lato',
+                                  fontSize: 26,
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.0,
+                                ),
+                                children: const [
+                                  TextSpan(
+                                    text: 'X',
+                                    style: TextStyle(
+                                      color: PaletteExplorerDark.primary,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: '-wallet',
+                                    style: TextStyle(
+                                      color: PaletteExplorerDark.foreground,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
