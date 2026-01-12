@@ -137,7 +137,7 @@ class _RestoreFromSeedDetailsFormState
             text: S.of(context).restore_recover,
             color: Theme.of(context).accentTextTheme.body2.color,
             textColor: Colors.white,
-            isDisabled: _nameController.text.isNotEmpty,
+            isDisabled: _nameController.text.isEmpty,
           );
         }),
       ),

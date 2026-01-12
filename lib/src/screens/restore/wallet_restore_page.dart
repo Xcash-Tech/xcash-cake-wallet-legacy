@@ -71,8 +71,12 @@ class WalletRestorePage extends BasePage {
         case WalletRestoreMode.keys:
           _pages.add(WalletRestoreFromKeysFrom(
               key: walletRestoreFromKeysFormKey,
-              onHeightOrDateEntered: (value) =>
-                  walletRestoreViewModel.isButtonEnabled = value));
+              onHeightOrDateEntered: (value) {
+                if (walletRestoreViewModel.mode != WalletRestoreMode.keys) {
+                  return;
+                }
+                walletRestoreViewModel.isButtonEnabled = value;
+              }));
           break;
         default:
           break;
