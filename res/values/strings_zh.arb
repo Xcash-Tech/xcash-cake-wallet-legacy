@@ -416,7 +416,7 @@
   "exchange_sync_alert_content" : "请等待，直到您的钱包同步",
 
   "pre_seed_title" : "重要",
-  "pre_seed_description" : "在下一页上，您将看到${words}个文字。 这是您独有的种子，是丟失或出现故障时恢复钱包的唯一方法。 您有必须将其写下并储存在Cake Wallet应用程序以外的安全地方。",
+  "pre_seed_description" : "在下一页上，您将看到${words}个文字。 这是您独有的种子，是丟失或出现故障时恢复钱包的唯一方法。 您有必须将其写下并储存在X-wallet应用程序以外的安全地方。",
   "pre_seed_button_text" : "我明白。 查看种子",
 
   "xmr_to_error" : "XMR.TO 错误",

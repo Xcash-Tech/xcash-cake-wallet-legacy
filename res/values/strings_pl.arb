@@ -416,7 +416,7 @@
   "exchange_sync_alert_content" : "Poczekaj, aż portfel zostanie zsynchronizowany",
 
   "pre_seed_title" : "WAŻNY",
-  "pre_seed_description" : "Na następnej stronie zobaczysz serię ${words} słów. To jest Twoje unikalne i prywatne ziarno i jest to JEDYNY sposób na odzyskanie portfela w przypadku utraty lub awarii. Twoim obowiązkiem jest zapisanie go i przechowywanie w bezpiecznym miejscu poza aplikacją Cake Wallet.",
+  "pre_seed_description" : "Na następnej stronie zobaczysz serię ${words} słów. To jest Twoje unikalne i prywatne ziarno i jest to JEDYNY sposób na odzyskanie portfela w przypadku utraty lub awarii. Twoim obowiązkiem jest zapisanie go i przechowywanie w bezpiecznym miejscu poza aplikacją X-wallet.",
   "pre_seed_button_text" : "Rozumiem. Pokaż mi moje nasienie",
 
   "xmr_to_error" : "Pomyłka XMR.TO",

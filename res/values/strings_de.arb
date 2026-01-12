@@ -416,7 +416,7 @@
   "exchange_sync_alert_content" : "Bitte warten Sie, bis Ihre Wallet synchronisiert ist",
 
   "pre_seed_title" : "WICHTIG",
-  "pre_seed_description" : "Auf der nächsten Seite sehen Sie eine Reihe von ${words} Wörtern. Dies ist Ihr einzigartiger und privater Seed und der EINZIGE Weg, um Ihre Wallet im Falle eines Verlusts oder einer Fehlfunktion wiederherzustellen. Es liegt in IHRER Verantwortung, ihn aufzuschreiben und an einem sicheren Ort außerhalb der Cake Wallet-App aufzubewahren.",
+  "pre_seed_description" : "Auf der nächsten Seite sehen Sie eine Reihe von ${words} Wörtern. Dies ist Ihr einzigartiger und privater Seed und der EINZIGE Weg, um Ihre Wallet im Falle eines Verlusts oder einer Fehlfunktion wiederherzustellen. Es liegt in IHRER Verantwortung, ihn aufzuschreiben und an einem sicheren Ort außerhalb der X-wallet-App aufzubewahren.",
   "pre_seed_button_text" : "Verstanden. Zeig mir meinen Seed",
 
   "xmr_to_error" : "XMR.TO-Fehler",

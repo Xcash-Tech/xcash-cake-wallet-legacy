@@ -416,7 +416,7 @@
   "exchange_sync_alert_content" : "Gentilmente aspetta che il tuo portafoglio sia sincronizzato",
 
   "pre_seed_title" : "IMPORTANTE",
-  "pre_seed_description" : "Nella pagina seguente ti sarà mostrata una serie di parole ${words}. Questo è il tuo seme unico e privato ed è l'UNICO modo per recuperare il tuo portafoglio in caso di perdita o malfunzionamento. E' TUA responsabilità trascriverlo e conservarlo in un posto sicuro fuori dall'app Cake Wallet.",
+  "pre_seed_description" : "Nella pagina seguente ti sarà mostrata una serie di parole ${words}. Questo è il tuo seme unico e privato ed è l'UNICO modo per recuperare il tuo portafoglio in caso di perdita o malfunzionamento. E' TUA responsabilità trascriverlo e conservarlo in un posto sicuro fuori dall'app X-wallet.",
   "pre_seed_button_text" : "Ho capito. Mostrami il seme",
 
   "xmr_to_error" : "XMR.TO errore",
