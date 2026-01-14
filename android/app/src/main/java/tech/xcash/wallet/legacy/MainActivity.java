@@ -9,8 +9,12 @@ import io.flutter.plugins.GeneratedPluginRegistrant;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
+import android.app.ActivityManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -22,6 +26,27 @@ import java.security.SecureRandom;
 public class MainActivity extends FlutterFragmentActivity {
     final String UTILS_CHANNEL = "com.cake_wallet/native_utils";
     final int UNSTOPPABLE_DOMAIN_MIN_VERSION_SDK = 24;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setTaskIcon();
+    }
+
+    private void setTaskIcon() {
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            setTaskDescription(new ActivityManager.TaskDescription(
+                getString(R.string.app_name),
+                R.mipmap.ic_launcher
+            ));
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setTaskDescription(new ActivityManager.TaskDescription(
+                getString(R.string.app_name),
+                icon
+            ));
+        }
+    }
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
