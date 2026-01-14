@@ -225,7 +225,7 @@ abstract class SettingsStoreBase with Store {
           WalletType.bitcoin: bitcoinElectrumServer,
           WalletType.litecoin: litecoinElectrumServer
         },
-        appVersion: '${packageInfo.version} beta',
+        appVersion: '${packageInfo.version} beta.3',
         isBitcoinBuyEnabled: isBitcoinBuyEnabled,
         initialFiatCurrency: currentFiatCurrency,
         initialBalanceDisplayMode: currentBalanceDisplayMode,

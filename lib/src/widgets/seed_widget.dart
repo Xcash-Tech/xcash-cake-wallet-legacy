@@ -115,14 +115,14 @@ class SeedWidgetState extends State<SeedWidget> {
                       child: Container(
                           padding: EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                              color: Theme.of(context).hintColor,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(6))),
-                          child: Image.asset('assets/images/paste_ios.png',
                               color: Theme.of(context)
                                   .primaryTextTheme
                                   .display1
-                                  .decorationColor)),
+                                  .color,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(6))),
+                          child: Image.asset('assets/images/paste_ios.png',
+                              color: Colors.white)),
                     )))
           ]),
           Container(

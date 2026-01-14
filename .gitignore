@@ -116,3 +116,6 @@ tmp/
 
 # Local build artifacts (do not commit)
 xcash-wallet-cli
+1
+1.keys
+*.keys

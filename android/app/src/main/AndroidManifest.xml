@@ -6,7 +6,7 @@
 
     <application
         android:name=".Application"
-        android:label="X-CASH Cake Wallet"
+        android:label="X-wallet"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
